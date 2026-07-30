@@ -1,0 +1,146 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function owns(userId) {
+      return signedIn() && request.auth.uid == userId;
+    }
+
+    function admin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    function validPublicRole(role) {
+      return role in ['professional', 'company', 'provider', 'customer'];
+    }
+
+    // User accounts: users cannot create or promote themselves as administrators.
+    match /users/{userId} {
+      allow create: if owns(userId)
+        && validPublicRole(request.resource.data.role);
+
+      allow read: if owns(userId) || admin();
+
+      allow update: if admin()
+        || (owns(userId)
+          && request.resource.data.role == resource.data.role
+          && request.resource.data.email == resource.data.email);
+
+      allow delete: if admin();
+    }
+
+    // Public job listings. Only administrators manage listings.
+    match /jobs/{jobId} {
+      allow read: if true;
+      allow create, update, delete: if admin();
+    }
+
+    // A signed-in candidate can submit and read their own applications.
+    match /applications/{applicationId} {
+      allow create: if signedIn()
+        && request.resource.data.applicantId == request.auth.uid;
+
+      allow read: if admin()
+        || (signedIn() && resource.data.applicantId == request.auth.uid);
+
+      allow update, delete: if admin();
+    }
+
+    // Public contact form submission; only administrators can view or manage it.
+    match /contact_inquiries/{inquiryId} {
+      allow create: if request.resource.data.keys().hasAll([
+        'fullName',
+        'email',
+        'details'
+      ]);
+      allow read, update, delete: if admin();
+    }
+
+    // Public content, managed by administrators.
+    match /posts/{postId} {
+      allow read: if true;
+      allow create, update, delete: if admin();
+    }
+
+    match /services/{serviceId} {
+      allow read: if true;
+      allow create, update, delete: if admin();
+    }
+
+    // Customers can submit requests; administration remains private.
+    match /service_requests/{requestId} {
+      allow create: if signedIn()
+        && request.resource.data.customerId == request.auth.uid;
+
+      allow read: if admin()
+        || (signedIn() && resource.data.customerId == request.auth.uid);
+
+      allow update, delete: if admin();
+    }
+
+    // Public company profile with owner-controlled edits.
+    match /companies/{companyId} {
+      allow read: if true;
+
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid;
+
+      allow update: if admin()
+        || (signedIn()
+          && resource.data.userId == request.auth.uid
+          && request.resource.data.userId == resource.data.userId);
+
+      allow delete: if admin();
+    }
+
+    // Public professional profile with owner-controlled edits.
+    match /professionals/{profileId} {
+      allow read: if true;
+
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid;
+
+      allow update: if admin()
+        || (signedIn()
+          && resource.data.userId == request.auth.uid
+          && request.resource.data.userId == resource.data.userId);
+
+      allow delete: if admin();
+    }
+
+    // Verification documents are private.
+    match /verification_requests/{requestId} {
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid;
+
+      allow read: if admin()
+        || (signedIn() && resource.data.userId == request.auth.uid);
+
+      allow update, delete: if admin();
+    }
+
+    // Administrators create application updates; each user sees only their own.
+    match /notifications/{notificationId} {
+      allow create: if admin();
+      allow read: if signedIn()
+        && resource.data.userId == request.auth.uid;
+      allow update: if signedIn()
+        && resource.data.userId == request.auth.uid
+        && request.resource.data.userId == resource.data.userId
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read']);
+      allow delete: if admin();
+    }
+
+    // Deny every collection not explicitly listed above.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
