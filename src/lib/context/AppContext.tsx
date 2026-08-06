@@ -1,13 +1,14 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { addDoc, collection, doc, getDoc, onSnapshot, query, serverTimestamp, where } from 'firebase/firestore';
+import { addDoc, collection, doc, deleteDoc, getDoc, onSnapshot, query, serverTimestamp, where } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth, db } from '@/lib/firebase';
 import {
   User,
   UserRole,
   Job,
+  JobCategory,
   JobApplication,
   Post,
   ServiceListing,
@@ -20,6 +21,7 @@ import {
 } from '../types';
 import {
   MOCK_USERS,
+  MOCK_CATEGORIES,
   MOCK_POSTS,
   MOCK_NOTIFICATIONS,
   MOCK_MESSAGES,
@@ -32,6 +34,12 @@ interface AppContextType {
   users: User[];
   companies: CompanyProfile[];
   professionalProfiles: ProfessionalProfile[];
+  dataLoaded: {
+    jobs: boolean;
+    companies: boolean;
+    professionals: boolean;
+  };
+  categories: JobCategory[];
   jobs: Job[];
   applications: JobApplication[];
   posts: Post[];
@@ -47,7 +55,14 @@ interface AppContextType {
   setCurrentCurrency: (currency: string) => void;
   formatPrice: (amountUsd: number) => string;
 
+  // Sidebar Navigation Drawer
+  sidebarOpen: boolean;
+  setSidebarOpen: (open: boolean) => void;
+  toggleSidebar: () => void;
+
   // Actions
+  addCategory: (name: string, description: string, iconName?: string, imageUrl?: string) => Promise<void>;
+  deleteCategory: (id: string) => Promise<void>;
   toggleSaveJob: (jobId: string) => void;
   toggleSavePost: (postId: string) => void;
   applyForJob: (jobId: string, coverLetter?: string, screeningAnswers?: Record<string, string>) => void;
@@ -74,6 +89,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [users] = useState<User[]>([]);
   const [companies, setCompanies] = useState<CompanyProfile[]>([]);
   const [professionalProfiles, setProfessionalProfiles] = useState<ProfessionalProfile[]>([]);
+  const [dataLoaded, setDataLoaded] = useState({ jobs: false, companies: false, professionals: false });
+  const [categories, setCategories] = useState<JobCategory[]>(MOCK_CATEGORIES);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [applications, setApplications] = useState<JobApplication[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
@@ -87,6 +104,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [savedJobIds, setSavedJobIds] = useState<string[]>(['job-1', 'job-3']);
   const [savedPostIds, setSavedPostIds] = useState<string[]>(['post-1']);
   const [connectedUserIds, setConnectedUserIds] = useState<string[]>(['u-3']);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const toggleSidebar = () => setSidebarOpen(prev => !prev);
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -94,8 +113,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       const storedUserRole = localStorage.getItem('vc_user_role');
       if (storedUserRole) {
         const found = MOCK_USERS.find(u => u.role === storedUserRole);
-        // Restore the locally selected demo perspective on initial mount.
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         if (found) setCurrentUser(found);
       }
     } catch (e) {
@@ -117,7 +134,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         const cached = localStorage.getItem(notificationCacheKey);
         if (cached) setNotifications(JSON.parse(cached) as Notification[]);
       } catch {
-        // Continue with the live Firestore source if local storage is unavailable.
       }
       const notificationsQuery = query(
         collection(db, 'applications'),
@@ -145,7 +161,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         try {
           localStorage.setItem(notificationCacheKey, JSON.stringify(liveNotifications));
         } catch {
-          // Notification history remains available from Firestore.
         }
       }, error => {
         console.warn('Application updates are temporarily unavailable.', error.code);
@@ -160,12 +175,19 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // Live Firestore data shared by the public website and admin workspace.
   useEffect(() => {
     const unsubscribers = [
+      onSnapshot(collection(db, 'categories'), snapshot => {
+        if (!snapshot.empty) {
+          const dbCategories = snapshot.docs.map(item => ({ ...item.data(), id: item.id } as JobCategory));
+          setCategories(dbCategories);
+        }
+      }, error => console.error('Could not load categories:', error)),
       onSnapshot(collection(db, 'jobs'), snapshot => {
         const liveJobs = snapshot.docs
           .map(item => ({ ...item.data(), id: item.id } as Job))
           .filter(item => item.status !== 'closed')
           .sort((a, b) => String(b.postedAt || '').localeCompare(String(a.postedAt || '')));
         setJobs(liveJobs);
+        setDataLoaded(current => ({ ...current, jobs: true }));
       }, error => console.error('Could not load jobs:', error)),
       onSnapshot(collection(db, 'posts'), snapshot => {
         setPosts(snapshot.docs.map(item => ({ ...item.data(), id: item.id } as Post)));
@@ -175,14 +197,49 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       }, error => console.error('Could not load services:', error)),
       onSnapshot(collection(db, 'companies'), snapshot => {
         setCompanies(snapshot.docs.map(item => ({ ...item.data(), id: item.id } as CompanyProfile)));
+        setDataLoaded(current => ({ ...current, companies: true }));
       }, error => console.error('Could not load companies:', error)),
       onSnapshot(collection(db, 'professionals'), snapshot => {
         setProfessionalProfiles(snapshot.docs.map(item => ({ ...item.data(), userId: item.data().userId || item.id } as ProfessionalProfile)));
+        setDataLoaded(current => ({ ...current, professionals: true }));
       }, error => console.error('Could not load professionals:', error)),
     ];
 
     return () => unsubscribers.forEach(unsubscribe => unsubscribe());
   }, []);
+
+  const addCategory = async (name: string, description: string, iconName?: string, imageUrl?: string) => {
+    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    const newCat: Omit<JobCategory, 'id'> = {
+      name,
+      slug,
+      description,
+      iconName: iconName || 'Briefcase',
+      imageUrl: imageUrl || '',
+      featured: true,
+      jobsCount: 0
+    };
+    try {
+      const docRef = await addDoc(collection(db, 'categories'), {
+        ...newCat,
+        createdAt: serverTimestamp()
+      });
+      setCategories(prev => [...prev, { ...newCat, id: docRef.id }]);
+    } catch (err) {
+      console.error("Could not add category to Firestore:", err);
+      // Fallback local addition if Firestore fails
+      setCategories(prev => [...prev, { ...newCat, id: `cat-${Date.now()}` }]);
+    }
+  };
+
+  const deleteCategory = async (id: string) => {
+    try {
+      await deleteDoc(doc(db, 'categories', id));
+    } catch (err) {
+      console.error("Could not delete category from Firestore:", err);
+    }
+    setCategories(prev => prev.filter(c => c.id !== id));
+  };
 
   const setCurrentUserRole = (role: UserRole) => {
     const targetUser = MOCK_USERS.find(u => u.role === role) || {
@@ -427,6 +484,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         users,
         companies,
         professionalProfiles,
+        dataLoaded,
+        categories,
         jobs,
         applications,
         posts,
@@ -441,6 +500,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         currentCurrency,
         setCurrentCurrency,
         formatPrice,
+        sidebarOpen,
+        setSidebarOpen,
+        toggleSidebar,
+        addCategory,
+        deleteCategory,
         toggleSaveJob,
         toggleSavePost,
         applyForJob,

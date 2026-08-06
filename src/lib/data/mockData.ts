@@ -4,6 +4,7 @@ import {
   CompanyProfile,
   ServiceListing,
   Job,
+  JobCategory,
   Post,
   BlogPost,
   Notification,
@@ -14,6 +15,15 @@ import {
   RecruitmentPlacement,
   GrowthStrategyItem
 } from '../types';
+
+export const MOCK_CATEGORIES: JobCategory[] = [
+  { id: 'cat-1', name: 'Technology & IT', slug: 'technology-it', description: 'Software engineering, cloud, AI, and IT infrastructure', iconName: 'Laptop', imageUrl: '/images/category-technology-it.png', featured: true },
+  { id: 'cat-2', name: 'Healthcare & Medical', slug: 'healthcare-medical', description: 'Clinical nursing, medicine, and healthcare administration', iconName: 'Stethoscope', imageUrl: '/images/category-healthcare-medical.png', featured: true },
+  { id: 'cat-3', name: 'Finance & Accounting', slug: 'finance-accounting', description: 'Financial auditing, accounting, banking, and tax', iconName: 'Coins', imageUrl: '/images/category-finance-accounting.png', featured: true },
+  { id: 'cat-4', name: 'Engineering & Construction', slug: 'engineering-construction', description: 'MEP, civil, structural, and site management', iconName: 'Wrench', imageUrl: '/images/category-engineering-construction.png', featured: true },
+  { id: 'cat-5', name: 'Sales & Marketing', slug: 'sales-marketing', description: 'B2B sales, corporate business development, and marketing', iconName: 'Briefcase', imageUrl: '/images/category-sales-marketing.png', featured: true },
+  { id: 'cat-6', name: 'Logistics & Supply Chain', slug: 'logistics-supply-chain', description: 'Fleet operations, dispatch, CDL drivers, and warehousing', iconName: 'Truck', imageUrl: '/images/category-logistics-supply-chain.png', featured: true },
+];
 
 export const CURRENT_USER: User = {
   id: 'u-1',
@@ -40,7 +50,7 @@ export const MOCK_USERS: User[] = [
     email: 'sarah.jenkins@nfs-partner.com',
     role: 'company',
     avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400',
-    headline: 'Fleet Procurement Director',
+    headline: 'Global Talent Acquisition & HR Director',
     location: 'London, UK',
     country: 'United Kingdom',
     city: 'London',
@@ -51,11 +61,11 @@ export const MOCK_USERS: User[] = [
   },
   {
     id: 'u-3',
-    name: 'Captain Robert Vance',
+    name: 'Dr. Robert Vance',
     email: 'robert.vance@nfs-staff.com',
     role: 'professional',
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400',
-    headline: 'Senior Heavy Commercial Driver',
+    headline: 'Senior Cloud Solutions Architect & Tech Lead',
     location: 'Dubai, UAE',
     country: 'United Arab Emirates',
     city: 'Dubai',
@@ -66,11 +76,11 @@ export const MOCK_USERS: User[] = [
   },
   {
     id: 'u-4',
-    name: 'Apex Fleet Logistics',
-    email: 'contact@apexfleet.com',
+    name: 'Apex Global Enterprises',
+    email: 'contact@apexglobal.com',
     role: 'provider',
     avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=400',
-    headline: 'Certified Carrier & Rental Fleet Partner',
+    headline: 'Multi-Industry Corporate Recruitment Partner',
     location: 'Riyadh, KSA',
     country: 'Saudi Arabia',
     city: 'Riyadh',
@@ -84,31 +94,31 @@ export const MOCK_USERS: User[] = [
 export const MOCK_PROFESSIONAL_PROFILES: ProfessionalProfile[] = [
   {
     userId: 'u-3',
-    name: 'Captain Robert Vance',
-    headline: 'Senior Heavy Commercial CDL Master Driver',
-    category: 'Heavy Fleet Driver',
-    experienceYears: 14,
+    name: 'Dr. Robert Vance',
+    headline: 'Senior Cloud Solutions Architect & Full-Stack Lead',
+    category: 'Technology & IT',
+    experienceYears: 12,
     availability: 'available',
     openToWork: true,
-    bio: '14+ years operating heavy articulated multi-axle trucks across GCC border routes with flawless safety records.',
-    skills: ['Heavy Truck Driving', 'Customs Clearance', 'Telematics Log', 'Route Optimization'],
+    bio: '12+ years driving cloud architecture, microservices, and web platforms across GCC and European enterprise environments.',
+    skills: ['Node.js', 'React / Next.js', 'AWS Cloud', 'System Architecture', 'PostgreSQL'],
     licenses: [
       {
         id: 'lic-1',
-        type: 'CDL Class A Heavy Trailer',
-        number: 'UAE-CDL-99482',
-        issuingAuthority: 'RTA Dubai',
+        type: 'AWS Certified Solutions Architect Professional',
+        number: 'AWS-PROF-99482',
+        issuingAuthority: 'Amazon Web Services',
         expiryDate: '2028-12-31',
         verified: true
       }
     ],
     certificates: [],
     experiences: [],
-    preferredLocations: ['UAE', 'Saudi Arabia', 'UK'],
+    preferredLocations: ['UAE', 'Saudi Arabia', 'UK', 'Remote'],
     languages: ['English', 'Arabic'],
-    connectionsCount: 1420,
-    followersCount: 3800,
-    profileCompletionScore: 95,
+    connectionsCount: 1850,
+    followersCount: 4200,
+    profileCompletionScore: 98,
     privacy: { showEmail: true, showPhone: true, showCV: true }
   }
 ];
@@ -117,13 +127,13 @@ export const MOCK_COMPANIES: CompanyProfile[] = [
   {
     id: 'comp-1',
     userId: 'u-2',
-    name: 'Apex Global Mobility & Logistics',
+    name: 'Apex Global Enterprises',
     logo: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=400',
     coverImage: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=1200',
-    tagline: 'Enterprise Fleet & Freight Operations',
-    description: 'Strategic partner of Novus Future Solutions operating over 500+ commercial vehicles.',
-    industry: 'Logistics Recruitment & Freight Transport',
-    companySize: '250-500 employees',
+    tagline: 'Multi-Industry Corporate Recruitment & Workforce Solutions',
+    description: 'Enterprise staffing and global talent partner operating across Technology, Healthcare, Construction, Finance, and Supply Chain.',
+    industry: 'Global Recruitment & Executive Staffing',
+    companySize: '500+ employees',
     headquarters: 'Dubai, UAE',
     country: 'United Arab Emirates',
     city: 'Dubai',
@@ -132,9 +142,9 @@ export const MOCK_COMPANIES: CompanyProfile[] = [
     phone: '+971 4 800 6688',
     registrationNumber: 'NFS-REG-88941',
     verified: true,
-    followersCount: 12400,
-    employeesCount: 350,
-    activeJobsCount: 12,
+    followersCount: 18400,
+    employeesCount: 650,
+    activeJobsCount: 24,
     featured: true
   }
 ];
@@ -149,9 +159,9 @@ export const MOCK_POSTS: Post[] = [
     authorRole: 'admin',
     authorVerified: true,
     postType: 'text',
-    content: 'Novus Future Solutions (NFS) is expanding its verified logistics talent network across Dubai and London, connecting transport employers with qualified drivers and operations professionals.',
-    hashtags: ['NFS', 'LogisticsJobs', 'Drivers', 'Recruitment', 'Growth'],
-    reactions: { like: 48, support: 12, celebrate: 25, insightful: 19 },
+    content: 'Novus Future Solutions (NFS) is expanding its multi-industry talent network across Dubai, London, and Riyadh, connecting employers with verified professionals in Technology, Healthcare, Engineering, Finance, and Logistics.',
+    hashtags: ['NFS', 'Careers', 'Hiring', 'Recruitment', 'GlobalJobs'],
+    reactions: { like: 88, support: 24, celebrate: 45, insightful: 32 },
     userReaction: 'like',
     comments: [
       {
@@ -160,11 +170,11 @@ export const MOCK_POSTS: Post[] = [
         authorName: 'Sarah Jenkins',
         authorAvatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400',
         authorRole: 'company',
-        content: 'Exceptional service! Our corporate fleet lease was delivered flawlessly.',
+        content: 'Exceptional recruitment platform! We placed 15 software engineers and healthcare specialists last month.',
         createdAt: '2 hours ago'
       }
     ],
-    sharesCount: 14,
+    sharesCount: 28,
     createdAt: '2026-07-27T10:00:00Z'
   }
 ];
@@ -177,7 +187,7 @@ export const MOCK_MESSAGES: Message[] = [
     senderName: 'Sarah Jenkins',
     senderAvatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400',
     receiverId: 'u-1',
-    content: 'Hello Marcus, we would like to confirm the shortlist for our ten-driver recruitment campaign next week.',
+    content: 'Hello Marcus, we would like to confirm the shortlist for our engineering & tech recruitment drive next week.',
     read: true,
     createdAt: '2026-07-28T09:30:00Z'
   }
@@ -187,19 +197,18 @@ export const MOCK_VERIFICATION_REQUESTS: VerificationRequest[] = [
   {
     id: 'ver-1',
     userId: 'u-3',
-    userName: 'Captain Robert Vance',
+    userName: 'Dr. Robert Vance',
     userEmail: 'robert.vance@nfs-staff.com',
     role: 'professional',
-    documentType: 'cdl_license',
-    documentNumber: 'UAE-CDL-99482',
-    documentUrl: '/sample-cdl.pdf',
+    documentType: 'government_id',
+    documentNumber: 'AWS-PROF-99482',
+    documentUrl: '/sample-cert.pdf',
     status: 'verified',
     submittedAt: '2026-07-10T12:00:00Z',
-    notes: 'CDL Class A and Heavy Articulated Trailer Clearance Verified by RTA'
+    notes: 'AWS Certified Solutions Architect & Technical Credential Verified'
   }
 ];
 
-/* NFS Pillar 1: Car Rentals Fleet */
 export const MOCK_CAR_RENTALS: CarRentalItem[] = [
   {
     id: 'car-101',
@@ -220,90 +229,9 @@ export const MOCK_CAR_RENTALS: CarRentalItem[] = [
     location: 'Dubai Airport Terminal 3 / Downtown Hub',
     rating: 4.95,
     reviewsCount: 142
-  },
-  {
-    id: 'car-102',
-    make: 'Range Rover',
-    model: 'Autobiography P530 V8',
-    year: 2025,
-    category: 'SUV & 4x4',
-    dailyRate: 420,
-    monthlyRate: 9200,
-    currency: 'USD',
-    transmission: 'Automatic',
-    passengers: 7,
-    fuelType: 'Petrol',
-    unlimitedKm: true,
-    features: ['All-Terrain AWD', 'Executive Rear Seating', 'Cool Box', 'Head-up Display', 'Air Suspension'],
-    image: 'https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&q=80&w=800',
-    available: true,
-    location: 'Abu Dhabi / Dubai Marina Hub',
-    rating: 4.98,
-    reviewsCount: 98
-  },
-  {
-    id: 'car-103',
-    make: 'Tesla',
-    model: 'Model X Plaid Dual-Motor',
-    year: 2025,
-    category: 'Sports / Electric',
-    dailyRate: 290,
-    monthlyRate: 6400,
-    currency: 'USD',
-    transmission: 'Automatic',
-    passengers: 6,
-    fuelType: 'Electric',
-    unlimitedKm: true,
-    features: ['Falcon Wing Doors', 'Autopilot Full Self-Drive', 'Supercharging Included', '0-60 in 2.5s'],
-    image: 'https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&q=80&w=800',
-    available: true,
-    location: 'Riyadh Financial District / Dubai Hub',
-    rating: 4.88,
-    reviewsCount: 116
-  },
-  {
-    id: 'car-104',
-    make: 'Mercedes-Benz',
-    model: 'V-Class V300d Extra Long Executive',
-    year: 2024,
-    category: 'Executive Van',
-    dailyRate: 310,
-    monthlyRate: 6800,
-    currency: 'USD',
-    transmission: 'Automatic',
-    passengers: 8,
-    fuelType: 'Diesel',
-    unlimitedKm: true,
-    features: ['Conference Seating', 'WiFi Onboard', 'Luggage Capacity 10+ Bags', 'Privacy Glass'],
-    image: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=800',
-    available: true,
-    location: 'London Heathrow / Dubai Media City',
-    rating: 4.92,
-    reviewsCount: 84
-  },
-  {
-    id: 'car-105',
-    make: 'Ford',
-    model: 'Transit Heavy Cargo Van 350',
-    year: 2024,
-    category: 'Commercial Cargo',
-    dailyRate: 150,
-    monthlyRate: 3200,
-    currency: 'USD',
-    transmission: 'Automatic',
-    passengers: 3,
-    fuelType: 'Diesel',
-    unlimitedKm: false,
-    features: ['High Roof Cargo', 'Hydraulic Lift', 'Tie-Down Anchor System', 'GPS Fleet Tracker'],
-    image: 'https://images.unsplash.com/photo-1559297434-fae8a1916a79?auto=format&fit=crop&q=80&w=800',
-    available: true,
-    location: 'Mumbai Port / Dubai Industrial City',
-    rating: 4.81,
-    reviewsCount: 65
   }
 ];
 
-/* NFS Pillar 2: Freight & Logistics Active Routes */
 export const MOCK_LOGISTICS_ROUTES: LogisticsShipment[] = [
   {
     id: 'log-201',
@@ -319,126 +247,71 @@ export const MOCK_LOGISTICS_ROUTES: LogisticsShipment[] = [
     status: 'In Transit',
     image: '/images/nfs-logistics.png',
     features: ['GPS Real-Time Tracking', 'Customs Clearance Escort', 'Hazmat Certified Trailer', '24/7 Driver Telematics']
-  },
-  {
-    id: 'log-202',
-    trackingCode: 'NFS-LOG-9102-MUM',
-    title: 'Cold Chain Express Pharmaceutical Corridor',
-    serviceType: 'Cold Chain Express',
-    origin: 'Mumbai Jawaharlal Nehru Port, IN',
-    destination: 'Delhi NCR Logistics Hub, IN',
-    cargoWeightTon: 18,
-    estimatedDays: 1,
-    ratePerTonKm: 1.15,
-    currency: 'USD',
-    status: 'Scheduled',
-    image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=800',
-    features: ['Temperature Controlled (-20C to +4C)', 'IoT Thermal Sensors', 'Biomedical Cargo Seal']
-  },
-  {
-    id: 'log-203',
-    trackingCode: 'NFS-LOG-4412-LON',
-    title: 'Intermodal Container Cargo Shipping',
-    serviceType: 'Sea Freight',
-    origin: 'Rotterdam Port, NL',
-    destination: 'London Gateway Port, UK',
-    cargoWeightTon: 45,
-    estimatedDays: 3,
-    ratePerTonKm: 0.65,
-    currency: 'USD',
-    status: 'In Transit',
-    image: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&q=80&w=800',
-    features: ['40ft High Cube Container', 'Port Handling Escort', 'Full Insurance Coverage Included']
   }
 ];
 
-/* NFS Pillar 3: Recruitment & Staffing Candidates */
 export const MOCK_RECRUITMENT_PLACEMENTS: RecruitmentPlacement[] = [
   {
     id: 'rec-301',
-    candidateName: 'Captain Robert Vance',
-    role: 'Senior Heavy Transport Master Driver',
+    candidateName: 'Dr. Robert Vance',
+    role: 'Senior Cloud Solutions Architect & Tech Lead',
     pillar: 'recruitment',
     category: 'Heavy Fleet Driver',
-    experienceYears: 14,
-    licenseType: 'CDL Class A + ADR Hazmat & Heavy Oversize Clearance',
-    expectedSalary: '$5,200 / month',
-    location: 'Dubai, UAE (Open to Relocation across GCC)',
+    experienceYears: 12,
+    licenseType: 'AWS Solutions Architect Professional & PMP Certified',
+    expectedSalary: '$8,500 / month',
+    location: 'Dubai, UAE (Open to Remote / Relocation)',
     availability: 'Immediate',
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400',
-    skills: ['Heavy Articulated Trucking', 'Cross-Border Customs', 'Route Optimization', 'Telematics Safety'],
+    skills: ['Cloud Architecture', 'Node.js / React', 'System Design', 'Enterprise Security'],
     verified: true
   },
   {
     id: 'rec-302',
     candidateName: 'Elena Rostova',
-    role: 'International Freight Dispatcher & Fleet Controller',
+    role: 'Registered Clinical Nurse Specialist',
     pillar: 'recruitment',
     category: 'Logistics Dispatcher',
     experienceYears: 8,
-    licenseType: 'IATA & FMC Logistics Specialist Certification',
-    expectedSalary: '$4,800 / month',
-    location: 'London, UK (Hybrid / Remote)',
+    licenseType: 'DHA Licensed Clinical Specialist Nurse',
+    expectedSalary: '$5,800 / month',
+    location: 'Dubai, UAE',
     availability: '2 Weeks Notice',
     avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400',
-    skills: ['TMS Software Mastery', 'Multi-Carrier Dispatch', 'Freight Cost Negotiation', 'Automated Driver Scheduling'],
+    skills: ['Critical Care', 'Patient Assessment', 'Clinical Procedures', 'Healthcare Compliance'],
     verified: true
   },
   {
     id: 'rec-303',
     candidateName: 'Siddharth Nair',
-    role: 'Head Fleet Mechanical & Systems Engineer',
+    role: 'Senior Financial Controller & Audit Director',
     pillar: 'recruitment',
     category: 'Fleet Engineer',
     experienceYears: 11,
-    licenseType: 'ASE Master Heavy Duty Mechanical Engineer',
-    expectedSalary: '$6,000 / month',
-    location: 'Mumbai, India',
+    licenseType: 'Chartered Certified Accountant (ACCA / CPA)',
+    expectedSalary: '$9,200 / month',
+    location: 'London, UK / Dubai',
     availability: 'Immediate',
     avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400',
-    skills: ['Heavy Engine Overhaul', 'Preventative Diagnostics', 'EV Fleet Conversion', 'Safety Compliance Audit'],
+    skills: ['Financial Audit', 'Corporate Risk', 'Taxation & IFRS', 'M&A Due Diligence'],
     verified: true
   }
 ];
 
-/* NFS Pillar 4: Business Growth & Consulting */
 export const MOCK_GROWTH_SOLUTIONS: GrowthStrategyItem[] = [
   {
     id: 'gro-401',
-    title: 'Enterprise Fleet Efficiency & Fuel Reduction Program',
-    focusArea: 'Fleet Optimization',
-    description: 'Transform fleet performance, reduce fuel expenditure by up to 24%, and automate maintenance schedules using telemetry and AI route dispatch.',
-    metricImpact: '24% Cost Reduction | 99.8% On-Time Delivery',
-    caseStudyClient: 'Apex Global Logistics GCC',
+    title: 'Enterprise Multi-Industry Staffing & Recruitment Scaling',
+    focusArea: 'Workforce Scaling',
+    description: 'Rapidly recruit pre-screened talent across Technology, Healthcare, Engineering, Finance, and Operations with full credential verification.',
+    metricImpact: '150+ Candidates Deployed in 30 Days',
+    caseStudyClient: 'Apex Global GCC',
     durationMonths: 6,
     image: '/images/nfs-growth.png',
-    features: ['AI Telematics Integration', 'Driver Performance Analytics', 'Predictive Maintenance Modules', 'CO2 Footprint Minimization']
-  },
-  {
-    id: 'gro-402',
-    title: 'Cross-Border Supply Chain Expansion Strategy',
-    focusArea: 'Logistics Network Expansion',
-    description: 'Custom advisory for logistics firms entering GCC, European, and South Asian transport corridors with pre-vetted custom clearing partners.',
-    metricImpact: '3.4x Network Reach | 45% Faster Clearance',
-    caseStudyClient: 'TransEuro Freight Systems',
-    durationMonths: 12,
-    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800',
-    features: ['Market Access Authorization', 'Partner Network Pairing', 'Regulatory & Tax Optimization']
-  },
-  {
-    id: 'gro-403',
-    title: 'Rapid Workforce Scaling & Manpower Placement',
-    focusArea: 'Workforce Scaling',
-    description: 'Dedicated recruitment drive providing 100+ CDL licensed drivers, dispatchers, and warehouse personnel within 30 days.',
-    metricImpact: '100+ Staff Deployed in 30 Days',
-    caseStudyClient: 'Middle East Distribution Hub',
-    durationMonths: 3,
-    image: '/images/nfs-recruitment.png',
-    features: ['Pre-Screened Skill Verification', 'Visa & Relocation Escort', 'Onboarding & Driver Orientation']
+    features: ['Credential Verification', 'Technical Assessment', 'Visa & Relocation Support', 'Replacement Guarantee']
   }
 ];
 
-/* Service Listings for Services Catalog */
 export const MOCK_SERVICES: ServiceListing[] = [
   {
     id: 'srv-1',
@@ -446,18 +319,18 @@ export const MOCK_SERVICES: ServiceListing[] = [
     providerName: 'Novus Future Solutions (NFS)',
     providerAvatar: '/images/nfs-logo.png',
     providerRole: 'company',
-    title: 'Logistics Candidate Verification & Placement Support',
+    title: 'Multi-Industry Candidate Background Verification & Placement',
     category: 'recruitment',
-    description: 'Identity, licence, experience, and role-readiness checks for drivers, dispatchers, warehouse teams, and fleet professionals.',
+    description: 'Identity, degree, credential, license, and reference checks for software engineers, medical professionals, accountants, engineers, and executives.',
     startingPrice: 350,
     currency: 'USD',
     priceUnit: 'per verified candidate',
     serviceArea: 'Global Talent Network',
-    rating: 4.96,
-    reviewsCount: 230,
-    deliveryTime: '2 - 5 Business Days',
+    rating: 4.98,
+    reviewsCount: 340,
+    deliveryTime: '2 - 4 Business Days',
     verified: true,
-    features: ['Identity Verification', 'Licence Review', 'Experience Screening', 'Employer-Ready Profile'],
+    features: ['Identity & Background Check', 'Degree & License Verification', 'Reference Screening', 'Employer-Ready Report'],
     image: '/images/recruitment-real-v2.png'
   },
   {
@@ -466,72 +339,242 @@ export const MOCK_SERVICES: ServiceListing[] = [
     providerName: 'Novus Future Solutions (NFS)',
     providerAvatar: '/images/nfs-logo.png',
     providerRole: 'company',
-    title: 'Global Heavy Cargo & Cross-Border Freight Logistics',
-    category: 'logistics',
-    description: 'End-to-end heavy truck freight transport, customs clearance, and container shipping across international corridors.',
-    startingPrice: 850,
-    currency: 'USD',
-    priceUnit: 'per shipment',
-    serviceArea: 'Worldwide Routes',
-    rating: 4.94,
-    reviewsCount: 310,
-    deliveryTime: '1 - 3 Days Express Freight',
-    verified: true,
-    features: ['GPS Live Telematics', 'Customs Port Escort', 'Hazmat & Cold Storage Options', 'Cargo Cargo Loss Guarantee'],
-    image: '/images/nfs-logistics.png'
-  },
-  {
-    id: 'srv-3',
-    providerId: 'nfs-official',
-    providerName: 'Novus Future Solutions (NFS)',
-    providerAvatar: '/images/nfs-logo.png',
-    providerRole: 'company',
-    title: 'CDL Heavy Driver & Corporate Manpower Recruitment',
+    title: 'Executive Headhunting & Global Talent Sourcing',
     category: 'recruitment',
-    description: 'Pre-vetted, licensed heavy commercial drivers, dispatchers, warehouse managers, and technical staff placement for corporate transport companies.',
-    startingPrice: 1200,
+    description: 'Specialized recruitment drive for senior leadership, tech leads, healthcare directors, financial controllers, and engineering managers.',
+    startingPrice: 1500,
     currency: 'USD',
     priceUnit: 'per successful candidate',
     serviceArea: 'Global Talent Sourcing',
-    rating: 4.98,
-    reviewsCount: 180,
+    rating: 4.99,
+    reviewsCount: 280,
     deliveryTime: '7 - 14 Days Placement',
     verified: true,
-    features: ['Background & Medical Clearance', 'License Verification', 'Replacement Guarantee', 'Visa & Work Permit Logistics'],
+    features: ['Custom Role Headhunting', 'Technical Screening', 'Visa & Relocation Escort', '90-Day Placement Guarantee'],
     image: '/images/nfs-recruitment.png'
-  },
-  {
-    id: 'srv-4',
-    providerId: 'nfs-official',
-    providerName: 'Novus Future Solutions (NFS)',
-    providerAvatar: '/images/nfs-logo.png',
-    providerRole: 'company',
-    title: 'Enterprise Growth Consulting & Fleet Scalability Advisory',
-    category: 'growth',
-    description: 'Data-driven business growth strategies, TMS software implementation, fleet fuel optimization, and international market expansion consulting.',
-    startingPrice: 2500,
-    currency: 'USD',
-    priceUnit: 'per advisory retainer',
-    serviceArea: 'Global Corporate Advisory',
-    rating: 4.99,
-    reviewsCount: 95,
-    deliveryTime: 'Custom Program',
-    verified: true,
-    features: ['Dedicated Growth Strategist', 'ROI & Cost Analysis', 'Custom Telematics Integration', 'Executive Board Reports'],
-    image: '/images/nfs-growth.png'
   }
 ];
 
-/* Jobs Data for Careers & Recruitment Portal */
+/* Multi-Industry Jobs for Careers & Recruitment Portal */
 export const MOCK_JOBS: Job[] = [
   {
     id: 'job-1',
     companyId: 'comp-nfs',
     companyName: 'Novus Future Solutions (NFS)',
     companyLogo: '/images/nfs-logo.png',
+    title: 'Senior Full-Stack Software Engineer (React / Node / AWS)',
+    category: 'Technology & IT',
+    location: 'Dubai & Remote',
+    country: 'United Arab Emirates',
+    city: 'Dubai',
+    salaryMin: 7500,
+    salaryMax: 10500,
+    currency: 'USD',
+    salaryPeriod: 'month',
+    jobType: 'Full-time',
+    workMode: 'Hybrid',
+    experienceLevel: '5+ Years',
+    vacancies: 8,
+    deadline: '2026-08-30',
+    description: 'NFS is recruiting experienced Full-Stack Engineers to build scalable cloud applications, candidate management platforms, and web APIs.',
+    responsibilities: [
+      'Architect resilient microservices using Node.js, Next.js, and TypeScript',
+      'Build responsive UI interfaces adhering to high aesthetic & performance standards',
+      'Manage CI/CD pipelines, Docker containers, and AWS cloud infrastructure'
+    ],
+    requirements: [
+      'Bachelor degree in Computer Science or Software Engineering',
+      'Minimum 5 years building production web applications in React / Node.js',
+      'Strong knowledge of PostgreSQL, GraphQL, and RESTful APIs'
+    ],
+    requiredSkills: ['TypeScript', 'React / Next.js', 'Node.js', 'AWS Cloud', 'PostgreSQL'],
+    requiredLicenses: ['AWS Certified Solutions Architect (Preferred)'],
+    benefits: ['Remote Work Flexibility', 'Health & Dental Insurance', 'Annual Learning Allowance', 'Performance Bonuses'],
+    visaSponsorship: true,
+    accommodationProvided: false,
+    foodAllowance: false,
+    urgentHiring: true,
+    verifiedCompany: true,
+    postedAt: '2026-07-25',
+    applicantsCount: 64,
+    status: 'active'
+  },
+  {
+    id: 'job-2',
+    companyId: 'comp-nfs',
+    companyName: 'Middle East Healthcare Alliance',
+    companyLogo: '/images/nfs-logo.png',
+    title: 'Registered Clinical Specialist Nurse',
+    category: 'Healthcare & Medical',
+    location: 'Dubai Healthcare City',
+    country: 'United Arab Emirates',
+    city: 'Dubai',
+    salaryMin: 5200,
+    salaryMax: 7000,
+    currency: 'USD',
+    salaryPeriod: 'month',
+    jobType: 'Full-time',
+    workMode: 'On-site',
+    experienceLevel: '4+ Years',
+    vacancies: 12,
+    deadline: '2026-09-15',
+    description: 'Join a leading multi-specialty hospital system in Dubai. Seeking licensed nurses for specialized clinical care and patient management.',
+    responsibilities: [
+      'Deliver high-quality clinical care, administer medications, and monitor patient vitals',
+      'Collaborate with attending physicians and medical staff on treatment plans',
+      'Ensure strict compliance with hospital infection control and safety standards'
+    ],
+    requirements: [
+      'Bachelor of Science in Nursing (BSN) or equivalent diploma',
+      'Active DHA / MOH Nurse License or eligibility to transfer',
+      'Minimum 4 years clinical experience in acute care or hospital environment'
+    ],
+    requiredSkills: ['Critical Care', 'Patient Monitoring', 'Clinical Administration', 'Triage'],
+    requiredLicenses: ['DHA Nurse License', 'BLS / ACLS Certification'],
+    benefits: ['Accommodation Provided', 'Health Insurance', 'Annual Flight Ticket', 'Overtime Pay'],
+    visaSponsorship: true,
+    accommodationProvided: true,
+    foodAllowance: true,
+    urgentHiring: true,
+    verifiedCompany: true,
+    postedAt: '2026-07-20',
+    applicantsCount: 48,
+    status: 'active'
+  },
+  {
+    id: 'job-3',
+    companyId: 'comp-nfs',
+    companyName: 'Apex Financial Partners',
+    companyLogo: '/images/nfs-logo.png',
+    title: 'Senior Financial Controller & Internal Auditor',
+    category: 'Finance & Accounting',
+    location: 'DIFC Financial District',
+    country: 'United Arab Emirates',
+    city: 'Dubai',
+    salaryMin: 8500,
+    salaryMax: 12000,
+    currency: 'USD',
+    salaryPeriod: 'month',
+    jobType: 'Full-time',
+    workMode: 'On-site',
+    experienceLevel: '6+ Years',
+    vacancies: 3,
+    deadline: '2026-09-30',
+    description: 'Manage corporate financial operations, financial statement consolidation, internal auditing, and tax compliance for regional business units.',
+    responsibilities: [
+      'Oversee monthly financial closing, balance sheet reconciliation, and IFRS reporting',
+      'Conduct internal audit reviews and enforce internal financial controls',
+      'Prepare annual budgets, variance analysis, and executive board presentations'
+    ],
+    requirements: [
+      'Active ACCA, CPA, or CA professional qualification',
+      'Minimum 6 years in corporate financial management or Big 4 auditing',
+      'Proficiency in SAP, Oracle Financials, and advanced financial modeling'
+    ],
+    requiredSkills: ['Financial Auditing', 'IFRS Compliance', 'Budgeting & Forecasting', 'SAP Financials'],
+    requiredLicenses: ['CPA / ACCA Certification'],
+    benefits: ['Performance Bonus Scheme', 'Family Health Coverage', 'Professional Membership Dues'],
+    visaSponsorship: true,
+    accommodationProvided: false,
+    foodAllowance: false,
+    urgentHiring: false,
+    verifiedCompany: true,
+    postedAt: '2026-07-22',
+    applicantsCount: 31,
+    status: 'active'
+  },
+  {
+    id: 'job-4',
+    companyId: 'comp-nfs',
+    companyName: 'Horizon Engineering & Construction',
+    companyLogo: '/images/nfs-logo.png',
+    title: 'MEP Senior Project Manager & Director',
+    category: 'Engineering & Construction',
+    location: 'Riyadh Mega Project Site',
+    country: 'Saudi Arabia',
+    city: 'Riyadh',
+    salaryMin: 9000,
+    salaryMax: 13000,
+    currency: 'USD',
+    salaryPeriod: 'month',
+    jobType: 'Full-time',
+    workMode: 'On-site',
+    experienceLevel: '8+ Years',
+    vacancies: 5,
+    deadline: '2026-09-25',
+    description: 'Lead mechanical, electrical, and plumbing (MEP) installation and commissioning for commercial high-rise towers in Riyadh.',
+    responsibilities: [
+      'Direct MEP engineering teams, sub-contractors, and site engineers',
+      'Ensure project milestones adhere to structural codes and safety standards',
+      'Review engineering drawings, bill of quantities (BOQ), and material approvals'
+    ],
+    requirements: [
+      'Bachelor degree in Mechanical or Electrical Engineering',
+      'Minimum 8 years managing commercial MEP engineering projects',
+      'PMP Certification or equivalent project management credentials'
+    ],
+    requiredSkills: ['MEP Engineering', 'Project Management', 'AutoCAD / BIM', 'Site Supervision'],
+    requiredLicenses: ['PMP Certification', 'Professional Engineer (PE) License'],
+    benefits: ['Furnished Executive Housing', 'Company Car', 'Annual Leave Flight Tickets', 'Project Completion Bonus'],
+    visaSponsorship: true,
+    accommodationProvided: true,
+    foodAllowance: true,
+    urgentHiring: true,
+    verifiedCompany: true,
+    postedAt: '2026-07-28',
+    applicantsCount: 39,
+    status: 'active'
+  },
+  {
+    id: 'job-5',
+    companyId: 'comp-nfs',
+    companyName: 'Novus Future Solutions (NFS)',
+    companyLogo: '/images/nfs-logo.png',
+    title: 'Regional Business Development & Corporate Sales Director',
+    category: 'Sales & Marketing',
+    location: 'London & Dubai (Hybrid)',
+    country: 'United Kingdom',
+    city: 'London',
+    salaryMin: 85000,
+    salaryMax: 120000,
+    currency: 'GBP',
+    salaryPeriod: 'year',
+    jobType: 'Full-time',
+    workMode: 'Hybrid',
+    experienceLevel: '6+ Years',
+    vacancies: 4,
+    deadline: '2026-10-10',
+    description: 'Drive corporate staffing and recruitment solution contracts with enterprise clients across UK, Europe, and Middle East.',
+    responsibilities: [
+      'Prospect and close corporate recruitment contracts with enterprise employers',
+      'Lead client pitch presentations, service agreements, and SLA reviews',
+      'Build long-term partnerships with C-suite executives and HR directors'
+    ],
+    requirements: [
+      'Proven record in enterprise B2B sales or executive recruitment consulting',
+      'Strong network of corporate HR and talent acquisition decision-makers',
+      'Outstanding negotiation and contract presentation skills'
+    ],
+    requiredSkills: ['B2B Sales', 'Key Account Management', 'Contract Negotiation', 'CRM Mastery'],
+    requiredLicenses: [],
+    benefits: ['Uncapped Commission Scheme', 'Corporate Car Allowance', 'Private Medical Insurance'],
+    visaSponsorship: false,
+    accommodationProvided: false,
+    foodAllowance: false,
+    urgentHiring: true,
+    verifiedCompany: true,
+    postedAt: '2026-07-29',
+    applicantsCount: 22,
+    status: 'active'
+  },
+  {
+    id: 'job-6',
+    companyId: 'comp-nfs',
+    companyName: 'Novus Future Solutions (NFS)',
+    companyLogo: '/images/nfs-logo.png',
     title: 'Senior Cross-Border CDL Class A Heavy Truck Driver',
-    category: 'Heavy Transport & Logistics',
-    location: 'Dubai to Riyadh Transport Route',
+    category: 'Logistics & Supply Chain',
+    location: 'Dubai to Riyadh Route',
     country: 'United Arab Emirates',
     city: 'Dubai',
     salaryMin: 4500,
@@ -543,20 +586,19 @@ export const MOCK_JOBS: Job[] = [
     experienceLevel: '5+ Years',
     vacancies: 15,
     deadline: '2026-08-30',
-    description: 'NFS is recruiting experienced CDL Class A drivers for heavy multi-axle trailers operating along the Dubai - Dammam - Riyadh logistics corridors.',
+    description: 'Recruiting experienced CDL Class A drivers for heavy multi-axle trailers operating along Dubai - Dammam - Riyadh logistics corridors.',
     responsibilities: [
-      'Operate modern Volvo & Mercedes heavy articulated trucks safely across GCC borders',
+      'Operate heavy articulated trucks safely across GCC borders',
       'Perform daily pre-trip vehicle safety inspection and log electronic telematics',
       'Ensure proper cargo tie-down, container locks, and customs seal integrity'
     ],
     requirements: [
       'Valid GCC Heavy Commercial License (CDL Class A or Heavy Trailer)',
-      'Clean driving record with minimum 5 years cross-border experience',
-      'Basic English communication skill'
+      'Clean driving record with minimum 5 years cross-border experience'
     ],
     requiredSkills: ['Heavy Truck Driving', 'Border Customs', 'Route Planning', 'Telematics Log'],
     requiredLicenses: ['CDL Class A Heavy Vehicle', 'Hazmat Permit'],
-    benefits: ['Free Shared Accommodation', 'Health Insurance', 'Annual Flight Ticket', 'Trip Performance Bonuses'],
+    benefits: ['Free Shared Accommodation', 'Health Insurance', 'Annual Flight Ticket'],
     visaSponsorship: true,
     accommodationProvided: true,
     foodAllowance: true,
@@ -565,142 +607,16 @@ export const MOCK_JOBS: Job[] = [
     postedAt: '2026-07-25',
     applicantsCount: 42,
     status: 'active'
-  },
-  {
-    id: 'job-2',
-    companyId: 'comp-nfs',
-    companyName: 'Novus Future Solutions (NFS)',
-    companyLogo: '/images/nfs-logo.png',
-    title: 'Fleet Operations & Transport Dispatch Coordinator',
-    category: 'Fleet Operations & Logistics',
-    location: 'London Headquarters',
-    country: 'United Kingdom',
-    city: 'London',
-    salaryMin: 38000,
-    salaryMax: 48000,
-    currency: 'GBP',
-    salaryPeriod: 'year',
-    jobType: 'Full-time',
-    workMode: 'Hybrid',
-    experienceLevel: '3+ Years',
-    vacancies: 4,
-    deadline: '2026-09-15',
-    description: 'Coordinate commercial fleet movements, driver schedules, delivery windows, and transport operations across London and UK logistics hubs.',
-    responsibilities: [
-      'Coordinate commercial vehicle dispatch and driver schedules',
-      'Monitor delivery windows, route changes, and maintenance requirements',
-      'Communicate with drivers, customers, and depot teams'
-    ],
-    requirements: [
-      'Degree or diploma in Logistics, Transport, or Hospitality Management',
-      'Minimum 3 years in fleet management, dispatch, or transport operations',
-      'Proficiency in TMS and Fleet Booking Software'
-    ],
-    requiredSkills: ['Fleet Dispatch', 'Customer Relations', 'Booking Management', 'UK Traffic Regulations'],
-    requiredLicenses: ['UK Driver License'],
-    benefits: ['Company Vehicle Allowance', 'Private Medical Insurance', 'Performance Bonus'],
-    visaSponsorship: false,
-    accommodationProvided: false,
-    foodAllowance: false,
-    urgentHiring: false,
-    verifiedCompany: true,
-    postedAt: '2026-07-20',
-    applicantsCount: 28,
-    status: 'active'
-  },
-  {
-    id: 'job-3',
-    companyId: 'comp-nfs',
-    companyName: 'Novus Future Solutions (NFS)',
-    companyLogo: '/images/nfs-logo.png',
-    title: 'Enterprise Growth & Business Development Consultant',
-    category: 'Growth Consulting',
-    location: 'Dubai & Remote',
-    country: 'United Arab Emirates',
-    city: 'Dubai',
-    salaryMin: 80000,
-    salaryMax: 110000,
-    currency: 'USD',
-    salaryPeriod: 'year',
-    jobType: 'Full-time',
-    workMode: 'Hybrid',
-    experienceLevel: '6+ Years',
-    vacancies: 2,
-    deadline: '2026-09-30',
-    description: 'Drive B2B growth for NFS recruitment, logistics, and workforce solutions for transport employers and multinational operators.',
-    responsibilities: [
-      'Identify enterprise corporate clients needing fleet, transport, or staffing solutions',
-      'Structure multi-year service contracts and growth consulting packages',
-      'Collaborate with operations leaders to ensure 100% SLA compliance'
-    ],
-    requirements: [
-      'Proven track record in corporate B2B sales or supply chain consulting',
-      'Strong network in transport, manufacturing, or corporate real estate',
-      'Excellent negotiation and presentation skills'
-    ],
-    requiredSkills: ['B2B Sales', 'Key Account Management', 'Growth Strategy', 'Contract Negotiation'],
-    requiredLicenses: [],
-    benefits: ['Generous Uncapped Commission', 'Global Travel Allowance', 'Stock Options'],
-    visaSponsorship: true,
-    accommodationProvided: false,
-    foodAllowance: false,
-    urgentHiring: true,
-    verifiedCompany: true,
-    postedAt: '2026-07-22',
-    applicantsCount: 19,
-    status: 'active'
-  },
-  {
-    id: 'job-4',
-    companyId: 'comp-nfs',
-    companyName: 'Novus Future Solutions (NFS)',
-    companyLogo: '/images/nfs-logo.png',
-    title: 'Customs Clearance & FASAH Brokerage Specialist',
-    category: 'Customs & Port Freight',
-    location: 'Dubai Jebel Ali Port Freezone',
-    country: 'United Arab Emirates',
-    city: 'Dubai',
-    salaryMin: 4200,
-    salaryMax: 5500,
-    currency: 'USD',
-    salaryPeriod: 'month',
-    jobType: 'Full-time',
-    workMode: 'On-site',
-    experienceLevel: '4+ Years',
-    vacancies: 8,
-    deadline: '2026-09-25',
-    description: 'Manage sea & air customs clearance, FASAH portal documentation, and port authority inspections for commercial cargo.',
-    responsibilities: [
-      'Submit customs declarations via FASAH and Dubai Trade portals',
-      'Inspect bills of lading, commercial invoices, and certificates of origin',
-      'Coordinate with port authority customs inspectors for immediate clearance'
-    ],
-    requirements: [
-      'Certified Customs Broker License or FASAH Clearance accreditation',
-      'Minimum 4 years experience in sea/air cargo customs brokerage',
-      'Fluent in English and Arabic'
-    ],
-    requiredSkills: ['Customs Clearance', 'FASAH Portal', 'Sea Freight Docs', 'Import/Export Tariff'],
-    requiredLicenses: ['Customs Broker Accreditation'],
-    benefits: ['Health & Life Insurance', 'Overtime Allowance', 'Annual Paid Leave'],
-    visaSponsorship: true,
-    accommodationProvided: false,
-    foodAllowance: true,
-    urgentHiring: true,
-    verifiedCompany: true,
-    postedAt: '2026-07-28',
-    applicantsCount: 34,
-    status: 'active'
   }
 ];
 
 export const MOCK_BLOG_POSTS: BlogPost[] = [
   {
     id: 'blog-1',
-    slug: 'future-of-fleet-management-and-logistics-2026',
-    title: 'The Future of Logistics Recruitment in 2026',
-    summary: 'How verified skills, faster hiring workflows, and workforce data are changing logistics recruitment.',
-    content: 'Logistics employers need qualified people faster, while candidates need clearer and more trustworthy opportunities. NFS brings verified profiles, direct applications, and industry-focused recruitment tools into one connected platform...',
+    slug: 'future-of-global-recruitment-2026',
+    title: 'The Future of Global Recruitment & Hiring in 2026',
+    summary: 'How verified skills, direct applications, and fast credential screening are changing multi-industry hiring.',
+    content: 'Employers in technology, healthcare, finance, engineering, and supply chain need qualified professionals faster than ever. NFS brings verified profiles, direct applications, and industry-focused recruitment tools into one connected platform...',
     category: 'Industry Insights',
     authorName: 'Marcus Vance',
     authorTitle: 'VP of Global Operations, NFS',
@@ -708,7 +624,7 @@ export const MOCK_BLOG_POSTS: BlogPost[] = [
     readTime: '5 min read',
     image: '/images/nfs-growth.png',
     publishedAt: '2026-07-15',
-    tags: ['Logistics', 'Recruitment', 'Drivers', 'Growth']
+    tags: ['Recruitment', 'Hiring', 'Jobs', 'Growth']
   }
 ];
 
@@ -718,7 +634,7 @@ export const MOCK_NOTIFICATIONS: Notification[] = [
     userId: 'u-1',
     type: 'system',
     title: 'Welcome to Novus Future Solutions (NFS)',
-    message: 'Explore verified logistics vacancies, employer hiring tools, industry services, and growth support.',
+    message: 'Explore verified vacancies across all industries, employer hiring tools, and executive recruitment support.',
     read: false,
     createdAt: '10 minutes ago'
   },
@@ -726,8 +642,8 @@ export const MOCK_NOTIFICATIONS: Notification[] = [
     id: 'notif-2',
     userId: 'u-1',
     type: 'job_alert',
-    title: 'New Employer Inquiry Received',
-    message: 'A verified transport employer has requested support for a multi-role logistics recruitment campaign.',
+    title: 'New Employer Recruitment Drive Received',
+    message: 'A verified corporate employer has requested support for a multi-role recruitment campaign.',
     read: false,
     createdAt: '1 hour ago'
   }

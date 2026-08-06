@@ -226,6 +226,8 @@ export interface Job {
   companyId: string;
   companyName: string;
   companyLogo: string;
+  companyWebsite?: string;
+  imageUrl?: string;
   title: string;
   category: string;
   location: string;
@@ -386,4 +388,15 @@ export interface BlogPost {
   image: string;
   publishedAt: string;
   tags: string[];
+}
+
+export interface JobCategory {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  iconName?: string;
+  imageUrl?: string;
+  jobsCount?: number;
+  featured?: boolean;
 }
