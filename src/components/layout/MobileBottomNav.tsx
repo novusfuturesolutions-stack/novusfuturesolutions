@@ -5,11 +5,13 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useApp } from '@/lib/context/AppContext';
 import { SidebarDrawer } from './SidebarDrawer';
-import { Home, Plus, Briefcase, LayoutDashboard, SlidersHorizontal, Users, Building2 } from 'lucide-react';
+import { Home, Plus, Briefcase, LayoutDashboard, SlidersHorizontal, Users, Building2, Bell } from 'lucide-react';
 
 export const MobileBottomNav = () => {
   const pathname = usePathname();
-  const { currentUser, sidebarOpen, setSidebarOpen } = useApp();
+  const { currentUser, sidebarOpen, setSidebarOpen, notifications } = useApp();
+  const [showNotifications, setShowNotifications] = useState(false);
+  const unreadCount = notifications.filter(item => !item.read).length;
 
   const getDashboardPath = () => {
     switch (currentUser.role) {
@@ -40,15 +42,60 @@ export const MobileBottomNav = () => {
           <img src="/images/nfs-logo.png" alt="NFS Logo" className="mobile-logo-blue h-7 w-auto object-contain" />
         </Link>
 
-        <button
-          type="button"
-          onClick={() => setSidebarOpen(true)}
-          className="inline-flex h-8 items-center gap-2 rounded-full bg-blue-50 border border-blue-200 px-3 text-[9px] font-extrabold uppercase tracking-[.12em] text-blue-600 shadow-xs transition-transform active:scale-95 hover:bg-blue-100"
-          aria-label="Open Sidebar Menu"
-        >
-          <SlidersHorizontal className="h-3.5 w-3.5 text-blue-600" />
-          Menu
-        </button>
+        <div className="relative flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setShowNotifications(value => !value)}
+            className="relative grid h-8 w-8 place-items-center rounded-full border border-blue-200 bg-white text-blue-600 shadow-xs transition-colors hover:bg-blue-50"
+            aria-label={`Notifications${unreadCount ? `, ${unreadCount} unread` : ''}`}
+            aria-expanded={showNotifications}
+          >
+            <Bell className={`h-4 w-4 ${unreadCount > 0 ? 'animate-wiggle' : ''}`} />
+            {unreadCount > 0 && (
+              <span className="absolute -right-1 -top-1 z-10 grid h-4 min-w-4 animate-bounce place-items-center rounded-full bg-blue-600 px-1 text-[8px] font-black text-white">
+                {unreadCount > 9 ? '9+' : unreadCount}
+              </span>
+            )}
+            {unreadCount > 0 && <span className="absolute inset-0 rounded-full bg-blue-400/35 animate-ping" />}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setSidebarOpen(true)}
+            className="inline-flex h-8 items-center gap-2 rounded-full bg-blue-50 border border-blue-200 px-3 text-[9px] font-extrabold uppercase tracking-[.12em] text-blue-600 shadow-xs transition-transform active:scale-95 hover:bg-blue-100"
+            aria-label="Open Sidebar Menu"
+          >
+            <SlidersHorizontal className="h-3.5 w-3.5 text-blue-600" />
+            Menu
+          </button>
+
+          {showNotifications && (
+            <div className="absolute right-0 top-11 z-[90] w-[min(21rem,calc(100vw-1.5rem))] overflow-hidden rounded-2xl border border-blue-200 bg-white text-slate-900 shadow-2xl">
+              <div className="border-b border-slate-100 bg-blue-50 px-4 py-3">
+                <p className="text-xs font-black">Notifications</p>
+                <p className="mt-0.5 text-[9px] text-slate-500">Recent recruitment updates</p>
+              </div>
+              <div className="max-h-72 overflow-y-auto">
+                {notifications.length === 0 ? (
+                  <p className="p-6 text-center text-[10px] font-bold text-slate-400">No notifications yet</p>
+                ) : notifications.slice(0, 6).map(item => (
+                  <Link
+                    key={item.id}
+                    href={item.link || '/jobs'}
+                    onClick={() => setShowNotifications(false)}
+                    className="flex gap-3 border-b border-slate-100 p-4 last:border-0 hover:bg-blue-50/60"
+                  >
+                    <span className={`mt-1 h-2 w-2 shrink-0 rounded-full ${item.read ? 'bg-slate-300' : 'bg-blue-600'}`} />
+                    <span>
+                      <strong className="block text-[11px] font-black">{item.title}</strong>
+                      <span className="mt-1 block text-[9px] leading-4 text-slate-600">{item.message}</span>
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       </header>
 
       <nav

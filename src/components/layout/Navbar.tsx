@@ -1,8 +1,9 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { CircleUserRound, LogOut, ShieldCheck, UserRound, SlidersHorizontal } from 'lucide-react';
+import { Bell, CircleUserRound, LogOut, ShieldCheck, UserRound, SlidersHorizontal } from 'lucide-react';
 import { useAuth } from '@/lib/context/AuthContext';
 import { useApp } from '@/lib/context/AppContext';
 
@@ -17,13 +18,15 @@ const links = [
 export function Navbar() {
   const pathname = usePathname();
   const { user, isAdmin, signOut } = useAuth();
-  const { toggleSidebar } = useApp();
+  const { toggleSidebar, notifications } = useApp();
+  const [showNotifications, setShowNotifications] = useState(false);
+  const unreadCount = notifications.filter(item => !item.read).length;
 
   if (pathname === '/' || pathname === '/auth' || pathname.startsWith('/admin')) return null;
 
   return (
-    <header className="pointer-events-none fixed inset-x-0 top-3 z-[80] hidden px-4 md:block">
-      <div className="pointer-events-auto mx-auto flex w-fit max-w-full items-center gap-2 rounded-full border border-blue-200/80 bg-white/90 p-1.5 shadow-[0_10px_30px_rgba(37,99,235,.15)] ring-1 ring-blue-100 backdrop-blur-2xl">
+    <header className="pointer-events-none fixed inset-x-0 top-3 z-[80] hidden px-4 lg:block">
+      <div className="pointer-events-auto relative mx-auto flex w-fit max-w-full items-center gap-2 rounded-full border border-blue-200/80 bg-white/90 p-1.5 shadow-[0_10px_30px_rgba(37,99,235,.15)] ring-1 ring-blue-100 backdrop-blur-2xl">
         <Link href="/" className="flex items-center pl-2 pr-1 group" aria-label="Novus Future Solutions Home">
           <img src="/images/nfs-logo.png" alt="NFS Logo" className="h-6 w-auto object-contain transition-transform group-hover:scale-105" />
         </Link>
@@ -64,6 +67,44 @@ export function Navbar() {
         <Link href="/contact" className="whitespace-nowrap rounded-full bg-blue-600 px-4 py-2 text-[10px] font-black text-white transition hover:bg-blue-700 shadow-md shadow-blue-600/20">
           Contact
         </Link>
+
+        <button
+          type="button"
+          onClick={() => setShowNotifications(value => !value)}
+          className="relative grid h-8 w-8 place-items-center rounded-full border border-blue-200 bg-white text-blue-600 shadow-sm transition hover:bg-blue-50"
+          aria-label={`Notifications${unreadCount ? `, ${unreadCount} unread` : ''}`}
+          aria-expanded={showNotifications}
+        >
+          <Bell className={`h-4 w-4 ${unreadCount > 0 ? 'animate-wiggle' : ''}`} />
+          {unreadCount > 0 && (
+            <span className="absolute -right-1 -top-1 z-10 grid h-4 min-w-4 animate-bounce place-items-center rounded-full bg-blue-600 px-1 text-[8px] font-black text-white">
+              {unreadCount > 9 ? '9+' : unreadCount}
+            </span>
+          )}
+          {unreadCount > 0 && <span className="absolute inset-0 rounded-full bg-blue-400/35 animate-ping" />}
+        </button>
+
+        {showNotifications && (
+          <div className="absolute right-0 top-12 w-80 overflow-hidden rounded-2xl border border-blue-200 bg-white text-slate-900 shadow-2xl">
+            <div className="border-b border-slate-100 bg-blue-50 px-4 py-3">
+              <p className="text-xs font-black">Notifications</p>
+              <p className="mt-0.5 text-[9px] text-slate-500">Recent recruitment updates</p>
+            </div>
+            <div className="max-h-72 overflow-y-auto">
+              {notifications.length === 0 ? (
+                <p className="p-6 text-center text-[10px] font-bold text-slate-400">No notifications yet</p>
+              ) : notifications.slice(0, 6).map(item => (
+                <Link key={item.id} href={item.link || '/jobs'} onClick={() => setShowNotifications(false)} className="flex gap-3 border-b border-slate-100 p-4 last:border-0 hover:bg-blue-50/60">
+                  <span className={`mt-1 h-2 w-2 shrink-0 rounded-full ${item.read ? 'bg-slate-300' : 'bg-blue-600'}`} />
+                  <span>
+                    <strong className="block text-[11px] font-black">{item.title}</strong>
+                    <span className="mt-1 block text-[9px] leading-4 text-slate-600">{item.message}</span>
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
 
         {isAdmin && (
           <Link href="/admin" className="grid h-8 w-8 place-items-center rounded-full bg-blue-600 text-white shadow-md" aria-label="Admin panel">
