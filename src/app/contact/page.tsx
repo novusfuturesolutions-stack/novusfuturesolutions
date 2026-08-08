@@ -59,7 +59,7 @@ export default function ContactPage() {
           <div className="md:col-span-5 space-y-6">
             <div className="p-6 rounded-3xl bg-white text-slate-900 border border-blue-100 shadow-md space-y-6">
               <div className="flex items-center gap-3">
-                <img src="/images/nfs-logo.png" alt="NFS" className="w-12 h-12 bg-slate-50 rounded-xl p-1 shadow-xs border border-blue-200" />
+                <img src="/images/nfs-logo.png" alt="NFS" className="mobile-logo-blue w-12 h-12 bg-slate-50 rounded-xl p-1 shadow-xs border border-blue-200 object-contain" />
                 <div>
                   <div className="font-extrabold text-slate-900 text-sm">Novus Future Solutions</div>
                   <div className="text-[10px] text-blue-600 font-mono">Global Recruitment Network</div>
@@ -86,8 +86,17 @@ export default function ContactPage() {
                 <div className="flex items-start gap-3 text-slate-600">
                   <Phone className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
                   <div>
-                    <div className="font-bold text-slate-900">24/7 Hotline</div>
-                    <div>+971 4 800 6688 / +44 20 7946 0921</div>
+                    <div className="font-bold text-slate-900">Direct Office Hotlines</div>
+                    <div className="font-mono mt-1 space-y-1.5 text-[11px]">
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-sans font-bold text-slate-800">🇩🇪 Germany:</span>
+                        <a href="tel:+4915216405341" className="text-blue-600 font-bold hover:underline">+49 152 16405341</a>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-sans font-bold text-slate-800">🇱🇹 Lithuania:</span>
+                        <a href="tel:+35679379950" className="text-blue-600 font-bold hover:underline">+356 79379950</a>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

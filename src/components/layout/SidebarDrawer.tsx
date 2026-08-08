@@ -19,6 +19,7 @@ import {
   MessageSquare,
   LayoutDashboard,
   RefreshCw,
+  Award,
   Briefcase
 } from 'lucide-react';
 import { useAuth } from '@/lib/context/AuthContext';
@@ -59,6 +60,8 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({ isOpen, onClose })
         { href: '/jobs', label: 'Vacancies', icon: Briefcase, badge: '500+' },
         { href: '/professionals', label: 'For Candidates', icon: User },
         { href: '/companies', label: 'For Employers', icon: Building2 },
+        { href: '/success-stories', label: 'Success Stories', icon: Award, badge: 'New' },
+        { href: '/blog', label: 'Blog & Insights', icon: Sparkles, badge: 'Hot' },
         { href: '/about', label: 'About NFS', icon: Globe },
         { href: '/contact', label: 'Contact Us', icon: MessageSquare }
       ]

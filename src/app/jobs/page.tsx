@@ -16,7 +16,10 @@ import {
   CheckCircle2,
   X,
   Zap,
-  ArrowUpRight
+  ArrowUpRight,
+  UploadCloud,
+  FileText,
+  Trash2
 } from 'lucide-react';
 
 export default function JobsPage() {
@@ -36,8 +39,18 @@ export default function JobsPage() {
   // Selected job for quick apply modal
   const [applyingJobId, setApplyingJobId] = useState<string | null>(null);
   const [coverLetter, setCoverLetter] = useState('');
+  const [cvFile, setCvFile] = useState<File | null>(null);
+  const [cvFileName, setCvFileName] = useState<string>('');
   const [screeningAnswers, setScreeningAnswers] = useState<Record<string, string>>({});
   const [applicationSubmitted, setApplicationSubmitted] = useState(false);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setCvFile(file);
+      setCvFileName(file.name);
+    }
+  };
 
   const filteredJobs = jobs.filter(j => {
     const matchesQuery = query === '' || j.title.toLowerCase().includes(query.toLowerCase()) || j.description.toLowerCase().includes(query.toLowerCase());
@@ -370,7 +383,7 @@ export default function JobsPage() {
                 <div>
                   <label className="block text-slate-700 font-bold mb-1.5">Cover Note / Message to Recruiter</label>
                   <textarea
-                    rows={4}
+                    rows={3}
                     required
                     placeholder="Describe your relevant experience and why you are a great fit for this role..."
                     value={coverLetter}
@@ -379,10 +392,67 @@ export default function JobsPage() {
                   ></textarea>
                 </div>
 
+                {/* Upload CV / Resume Section */}
+                <div className="space-y-1.5 pt-1">
+                  <div className="flex items-center justify-between">
+                    <label className="font-bold text-slate-700 flex items-center gap-1.5">
+                      <UploadCloud className="w-4 h-4 text-blue-600" />
+                      <span>Upload CV / Resume</span>
+                    </label>
+                    <span className="text-[10px] text-slate-400 font-semibold">PDF, DOC, DOCX (Max 10MB)</span>
+                  </div>
+
+                  {cvFile || cvFileName ? (
+                    <div className="flex items-center justify-between p-3 bg-blue-50/70 border border-blue-200 rounded-2xl shadow-2xs">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-xl bg-blue-600 text-white shadow-xs">
+                          <FileText className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <div className="font-extrabold text-slate-900 text-xs flex items-center gap-2">
+                            <span className="truncate max-w-[180px]">{cvFile ? cvFile.name : cvFileName}</span>
+                            <span className="text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200">
+                              Attached ✓
+                            </span>
+                          </div>
+                          <div className="text-[10px] text-slate-500 mt-0.5">
+                            {cvFile ? `${(cvFile.size / (1024 * 1024)).toFixed(2)} MB` : 'Profile Resume Ready'}
+                          </div>
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => { setCvFile(null); setCvFileName(''); }}
+                        className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-white rounded-xl transition-colors border border-transparent hover:border-slate-200"
+                        title="Remove attached CV"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <label className="relative flex flex-col items-center justify-center p-4 bg-slate-50 border-2 border-dashed border-blue-200 hover:border-blue-500 rounded-2xl cursor-pointer transition-all duration-200 group text-center hover:bg-blue-50/30">
+                      <input
+                        type="file"
+                        accept=".pdf,.doc,.docx"
+                        onChange={handleFileChange}
+                        className="absolute inset-0 opacity-0 cursor-pointer"
+                      />
+                      <div className="w-9 h-9 rounded-xl bg-blue-100/80 border border-blue-200 text-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform mb-1.5">
+                        <UploadCloud className="w-4 h-4" />
+                      </div>
+                      <p className="text-xs font-extrabold text-slate-800">
+                        Click to select file <span className="text-blue-600">or drag & drop your CV</span>
+                      </p>
+                      <p className="text-[10px] text-slate-400 mt-0.5">Supported formats: PDF, DOC, DOCX</p>
+                    </label>
+                  )}
+                </div>
+
                 <div className="pt-2 flex justify-end gap-3">
                   <button
                     type="button"
-                    onClick={() => setApplyingJobId(null)}
+                    onClick={() => { setApplyingJobId(null); setCvFile(null); setCvFileName(''); }}
                     className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-bold text-xs hover:bg-slate-100"
                   >
                     Cancel

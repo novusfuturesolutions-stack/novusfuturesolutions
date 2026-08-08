@@ -1,11 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { memo } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ArrowRight, Globe, Briefcase, Award, Users, TrendingUp } from 'lucide-react';
 
-export const Footer = () => {
+export const Footer = memo(function Footer() {
   const pathname = usePathname();
   if (pathname.startsWith('/admin')) return null;
 
@@ -86,7 +86,7 @@ export const Footer = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 text-xs text-slate-600 pt-8 border-t border-slate-200">
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <img src="/images/nfs-logo.png" alt="NFS Logo" className="w-8 h-8 rounded-lg bg-white border border-blue-200 p-0.5" />
+              <img src="/images/nfs-logo.png" alt="NFS Logo" className="mobile-logo-blue w-8 h-8 rounded-lg bg-white border border-blue-200 p-0.5 object-contain" />
               <span className="font-extrabold text-sm text-slate-900">Novus Future Solutions</span>
             </div>
             <p className="text-[11px] leading-relaxed text-slate-500">
@@ -95,11 +95,18 @@ export const Footer = () => {
           </div>
 
           <div>
-            <h4 className="font-bold text-slate-900 mb-3 text-sm">Global Headquarters</h4>
-            <p className="font-medium text-slate-700">Novus Future Solutions FZ-LLC</p>
-            <p>Jumeirah Lakes Towers, Cluster X</p>
-            <p>Dubai, United Arab Emirates</p>
-            <p className="mt-2 text-slate-500 font-mono text-[11px]">+971 4 800 6688</p>
+            <h4 className="font-bold text-slate-900 mb-3 text-sm">Global Offices & Hotlines</h4>
+            <p className="font-medium text-slate-700">Novus Future Solutions (NFS)</p>
+            <div className="mt-2.5 space-y-2 font-mono text-[11px]">
+              <div>
+                <span className="font-sans font-bold text-slate-900 block text-[11px]">🇩🇪 Germany Office</span>
+                <a href="tel:+4915216405341" className="text-blue-600 hover:underline font-bold">+49 152 16405341</a>
+              </div>
+              <div>
+                <span className="font-sans font-bold text-slate-900 block text-[11px]">🇱🇹 Lithuania Office</span>
+                <a href="tel:+35679379950" className="text-blue-600 hover:underline font-bold">+356 79379950</a>
+              </div>
+            </div>
           </div>
 
           <div>
@@ -108,6 +115,8 @@ export const Footer = () => {
               <li><Link href="/jobs" className="hover:text-blue-600 font-medium">Browse Vacancies</Link></li>
               <li><Link href="/professionals" className="hover:text-blue-600 font-medium">Candidate Directory</Link></li>
               <li><Link href="/companies" className="hover:text-blue-600 font-medium">Employer Partners</Link></li>
+              <li><Link href="/success-stories" className="hover:text-blue-600 font-medium">Success Stories</Link></li>
+              <li><Link href="/blog" className="hover:text-blue-600 font-medium">Blog &amp; Insights</Link></li>
               <li><Link href="/about" className="hover:text-blue-600 font-medium">About NFS</Link></li>
             </ul>
           </div>
@@ -131,4 +140,4 @@ export const Footer = () => {
       </div>
     </footer>
   );
-};
+});

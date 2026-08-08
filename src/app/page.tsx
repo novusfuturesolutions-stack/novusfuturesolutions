@@ -160,10 +160,11 @@ export default function HomePage() {
   };
 
   // Employer Fast Request Bar State (Indigroup & 24/7 Drive Inspired)
-  const [reqServiceType, setReqServiceType] = useState('executive');
   const [reqRoleNeeded, setReqRoleNeeded] = useState('');
+  const [reqStaffCount, setReqStaffCount] = useState('1 - 5 Staff');
   const [reqName, setReqName] = useState('');
-  const [reqContact, setReqContact] = useState('');
+  const [reqEmail, setReqEmail] = useState('');
+  const [reqPhone, setReqPhone] = useState('');
   const [reqSubmitting, setReqSubmitting] = useState(false);
   const [reqSuccess, setReqSuccess] = useState(false);
 
@@ -171,13 +172,16 @@ export default function HomePage() {
     e.preventDefault();
     setReqSubmitting(true);
     try {
-      await addDoc(collection(db, 'contact_inquiries'), {
-        division: reqServiceType === 'executive' ? 'Executive Search & Headhunting' : '24/7 Operational Staffing',
-        fullName: reqName,
-        email: reqContact,
-        details: `Employer Request: Position needed: ${reqRoleNeeded}`,
-        createdAt: serverTimestamp(),
-        status: 'new'
+      await addDoc(collection(db, 'employer_requests'), {
+        serviceType: 'Corporate Staffing Request',
+        positionNeeded: reqRoleNeeded,
+        staffCount: reqStaffCount,
+        companyName: reqName,
+        contactPerson: reqName,
+        email: reqEmail,
+        phone: reqPhone,
+        status: 'new',
+        createdAt: serverTimestamp()
       });
       setReqSuccess(true);
     } catch (err) {
@@ -238,7 +242,7 @@ export default function HomePage() {
     <div className="page-intro min-h-screen bg-slate-50 pb-24 font-sans text-slate-900 selection:bg-blue-600 selection:text-white lg:pb-16">
       
       {/* 1. HERO SECTION */}
-      <section className="page-intro__hero mx-auto w-full max-w-[1536px] px-3 pb-4 pt-16 sm:px-4 lg:px-6 lg:pt-10">
+      <section className="page-intro__hero relative z-20 mx-auto w-full max-w-[1536px] px-3 pb-4 pt-16 sm:px-4 lg:px-6 lg:pt-10">
         <div className="page-intro__hero-card relative isolate flex min-h-[740px] flex-col justify-between overflow-visible rounded-[1.5rem] border border-slate-300/70 bg-slate-950 p-4 text-white shadow-[0_20px_60px_rgba(15,23,42,.18)] sm:min-h-[680px] sm:rounded-[2rem] sm:p-8 sm:pb-24 lg:min-h-[640px] lg:rounded-[2.8rem] lg:p-10">
           
           <div className="absolute inset-0 -z-30 overflow-hidden rounded-[2rem] sm:rounded-[2.8rem]">
@@ -490,94 +494,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 2. DUAL RECRUITMENT PILLARS (INDIGROUP + 24/7 DRIVE INSPIRED) */}
-      <section data-scroll-reveal className="mx-auto w-full max-w-[1536px] space-y-8 px-3 py-10 sm:px-6 sm:py-12 lg:px-8">
-        <div ref={pillarSliderRef} className="no-scrollbar flex items-stretch snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain scroll-smooth pb-2 sm:gap-6">
-          
-          {/* Pillar 1: Executive Search & Headhunting (Indigroup-inspired) */}
-          <div className="flex w-full flex-none snap-center flex-col justify-between space-y-6 rounded-2xl border border-blue-100 bg-white p-5 shadow-md transition-all hover:border-blue-500 sm:rounded-3xl sm:p-8 md:w-[calc(50%-0.75rem)]">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="p-3 rounded-2xl bg-blue-50 border border-blue-200 text-blue-600">
-                  <Award className="w-6 h-6" />
-                </div>
-                <span className="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold border border-blue-200">
-                  Indigroup Executive Standard
-                </span>
-              </div>
 
-              <div>
-                <h3 className="text-2xl font-black text-slate-900">Executive Search &amp; Headhunting</h3>
-                <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-                  C-Suite leadership, Senior IT Engineers, Healthcare Directors, Financial Controllers, and MEP Project Directors placed with certified competency evaluation.
-                </p>
-              </div>
-
-              <div className="space-y-2.5 pt-2">
-                <div className="flex items-center gap-2.5 text-xs text-slate-700 font-bold">
-                  <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />
-                  <span>21 Days Average Shortlist Delivery</span>
-                </div>
-                <div className="flex items-center gap-2.5 text-xs text-slate-700 font-bold">
-                  <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />
-                  <span>Certified Psychological &amp; Competency Assessment</span>
-                </div>
-                <div className="flex items-center gap-2.5 text-xs text-slate-700 font-bold">
-                  <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />
-                  <span>98% Client Retention &amp; Replacement Guarantee</span>
-                </div>
-              </div>
-            </div>
-
-            <Link href="/contact" className="inline-flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-blue-600 text-white font-extrabold text-xs shadow-md hover:bg-blue-700 transition">
-              <span>Request Executive Headhunting</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-
-          {/* Pillar 2: 24/7 Transport & Operational Staffing (24/7 Drive-inspired) */}
-          <div className="flex w-full flex-none snap-center flex-col justify-between space-y-6 rounded-2xl border border-blue-100 bg-white p-5 shadow-md transition-all hover:border-blue-500 sm:rounded-3xl sm:p-8 md:w-[calc(50%-0.75rem)]">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="p-3 rounded-2xl bg-blue-50 border border-blue-200 text-blue-600">
-                  <Truck className="w-6 h-6" />
-                </div>
-                <span className="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold border border-blue-200">
-                  24/7 Drive Guarantee
-                </span>
-              </div>
-
-              <div>
-                <h3 className="text-2xl font-black text-slate-900">24/7 Transport &amp; Operational Staffing</h3>
-                <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-                  Commercial CDL Drivers (CE, C, Code 95), Fleet Managers, Warehouse &amp; Logistics Specialists, and Dispatchers available for 24/7 on-demand deployment.
-                </p>
-              </div>
-
-              <div className="space-y-2.5 pt-2">
-                <div className="flex items-center gap-2.5 text-xs text-slate-700 font-bold">
-                  <Zap className="w-4 h-4 text-blue-600 shrink-0" />
-                  <span>24/7 Emergency Driver &amp; Manpower Dispatch</span>
-                </div>
-                <div className="flex items-center gap-2.5 text-xs text-slate-700 font-bold">
-                  <ShieldCheck className="w-4 h-4 text-blue-600 shrink-0" />
-                  <span>Full Commercial License &amp; Background Verification</span>
-                </div>
-                <div className="flex items-center gap-2.5 text-xs text-slate-700 font-bold">
-                  <Users className="w-4 h-4 text-blue-600 shrink-0" />
-                  <span>Flexible Short-term, Long-term &amp; Permanent Contracts</span>
-                </div>
-              </div>
-            </div>
-
-            <Link href="/contact" className="inline-flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-blue-600 text-white font-extrabold text-xs shadow-md hover:bg-blue-700 transition">
-              <span>Request 24/7 Drivers / Operational Staff</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-
-        </div>
-      </section>
 
       {/* 3. 60-SECOND EMPLOYER CANDIDATE REQUEST BAR (FIREBASE SYNC) */}
       <section data-scroll-reveal className="mx-auto w-full max-w-[1536px] px-3 py-8 sm:px-6 lg:px-8">
@@ -600,19 +517,7 @@ export default function HomePage() {
               <p className="text-xs text-slate-600">Our senior staffing manager will call your contact number shortly.</p>
             </div>
           ) : (
-            <form onSubmit={handleEmployerRequest} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-xs">
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">Service Type</label>
-                <select
-                  value={reqServiceType}
-                  onChange={e => setReqServiceType(e.target.value)}
-                  className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-semibold text-slate-900 focus:outline-none focus:border-blue-600"
-                >
-                  <option value="executive">Executive Search (C-Suite & IT)</option>
-                  <option value="operational">24/7 Drivers & Operational Staff</option>
-                </select>
-              </div>
-
+            <form onSubmit={handleEmployerRequest} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 text-xs">
               <div>
                 <label className="block font-bold text-slate-700 mb-1">Position Needed</label>
                 <input
@@ -623,6 +528,22 @@ export default function HomePage() {
                   onChange={e => setReqRoleNeeded(e.target.value)}
                   className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600"
                 />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">How Many Staff Needed?</label>
+                <select
+                  value={reqStaffCount}
+                  onChange={e => setReqStaffCount(e.target.value)}
+                  className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-semibold text-slate-900 focus:outline-none focus:border-blue-600"
+                >
+                  <option value="1 Candidate">1 Candidate</option>
+                  <option value="2 - 5 Staff">2 - 5 Staff</option>
+                  <option value="5 - 10 Staff">5 - 10 Staff</option>
+                  <option value="10 - 25 Staff">10 - 25 Staff</option>
+                  <option value="25 - 50 Staff">25 - 50 Staff</option>
+                  <option value="50+ Bulk Staff">50+ Bulk Staff</option>
+                </select>
               </div>
 
               <div>
@@ -638,13 +559,25 @@ export default function HomePage() {
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">Phone / Email</label>
+                <label className="block font-bold text-slate-700 mb-1">Email Address</label>
                 <input
-                  type="text"
+                  type="email"
                   required
-                  placeholder="+971 50... or john@company.com"
-                  value={reqContact}
-                  onChange={e => setReqContact(e.target.value)}
+                  placeholder="john@company.com"
+                  value={reqEmail}
+                  onChange={e => setReqEmail(e.target.value)}
+                  className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Phone Number</label>
+                <input
+                  type="tel"
+                  required
+                  placeholder="+971 50 123 4567"
+                  value={reqPhone}
+                  onChange={e => setReqPhone(e.target.value)}
                   className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600"
                 />
               </div>

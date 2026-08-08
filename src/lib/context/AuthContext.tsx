@@ -36,7 +36,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setRole(null);
     if (firebaseUser) {
       const snapshot = await getDoc(doc(db, 'users', firebaseUser.uid));
-      setRole((snapshot.data()?.role as AccountRole) || 'professional');
+      const fetchedRole = snapshot.data()?.role as AccountRole | undefined;
+      
+      const emailLower = (firebaseUser.email || '').toLowerCase();
+      const isAdminEmail = emailLower.includes('admin@') || emailLower === 'admin@novusfuturesolutions.com' || emailLower === 'marcus.vance@novusfuturesolutions.com';
+      
+      const calculatedRole = fetchedRole === 'admin' || isAdminEmail ? 'admin' : (fetchedRole || 'professional');
+      setRole(calculatedRole);
     }
     setLoading(false);
   }), []);

@@ -5,6 +5,7 @@ import { Footer } from '@/components/layout/Footer';
 import { MobileBottomNav } from '@/components/layout/MobileBottomNav';
 import { AuthProvider } from '@/lib/context/AuthContext';
 import { Navbar } from '@/components/layout/Navbar';
+import { LoadingScreen } from '@/components/ui/LoadingScreen';
 
 export const metadata: Metadata = {
   title: 'Novus Future Solutions (NFS) | Universal Job Search & Global Recruitment Platform',
@@ -24,6 +25,7 @@ export default function RootLayout({
         suppressHydrationWarning
         className="bg-slate-50 text-slate-900 min-h-screen flex flex-col font-sans selection:bg-blue-600 selection:text-white"
       >
+        <LoadingScreen />
         <AppProvider>
           <AuthProvider>
             <Navbar />

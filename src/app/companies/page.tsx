@@ -2,8 +2,10 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Building2, Search, MapPin, ShieldCheck, Users, Briefcase, ChevronRight } from 'lucide-react';
+import { Building2, Search, MapPin, ShieldCheck, Users, Briefcase, ChevronRight, Headphones, CheckCircle2, Send, Loader2 } from 'lucide-react';
 import { useApp } from '@/lib/context/AppContext';
+import { db } from '@/lib/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 export default function CompaniesPage() {
   const { companies } = useApp();
@@ -49,6 +51,9 @@ export default function CompaniesPage() {
             />
           </div>
         </div>
+
+        {/* 60-SECOND EMPLOYER STAFFING REQUEST BAR */}
+        <EmployerRequestBar />
 
         {/* Companies Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -140,6 +145,145 @@ export default function CompaniesPage() {
         </div>
 
       </div>
+    </div>
+  );
+}
+
+function EmployerRequestBar() {
+  const [reqRoleNeeded, setReqRoleNeeded] = useState('');
+  const [reqStaffCount, setReqStaffCount] = useState('1 - 5 Staff');
+  const [reqName, setReqName] = useState('');
+  const [reqEmail, setReqEmail] = useState('');
+  const [reqPhone, setReqPhone] = useState('');
+  const [reqSubmitting, setReqSubmitting] = useState(false);
+  const [reqSuccess, setReqSuccess] = useState(false);
+
+  const handleEmployerRequest = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setReqSubmitting(true);
+    try {
+      await addDoc(collection(db, 'employer_requests'), {
+        serviceType: 'Corporate Staffing Request',
+        positionNeeded: reqRoleNeeded,
+        staffCount: reqStaffCount,
+        companyName: reqName,
+        contactPerson: reqName,
+        email: reqEmail,
+        phone: reqPhone,
+        status: 'new',
+        createdAt: serverTimestamp()
+      });
+      setReqSuccess(true);
+    } catch (err) {
+      console.error('Error submitting employer request:', err);
+    } finally {
+      setReqSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="space-y-6 rounded-3xl border border-blue-100 bg-white p-6 sm:p-8 text-slate-900 shadow-xl">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-bold border border-blue-200">
+            <Headphones className="w-3.5 h-3.5" />
+            <span>60-Second Employer Request</span>
+          </div>
+          <h3 className="text-2xl font-black text-slate-900 mt-2">Need Staff or Executives Urgently?</h3>
+          <p className="text-xs text-slate-500">Submit your requirement below and our team will call you within 15 minutes.</p>
+        </div>
+      </div>
+
+      {reqSuccess ? (
+        <div className="p-6 rounded-2xl bg-blue-50 border border-blue-200 text-center space-y-2">
+          <CheckCircle2 className="w-8 h-8 text-blue-600 mx-auto" />
+          <h4 className="font-bold text-slate-900 text-base">Request Received!</h4>
+          <p className="text-xs text-slate-600">Our senior staffing manager will call your contact number shortly.</p>
+        </div>
+      ) : (
+        <form onSubmit={handleEmployerRequest} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 text-xs">
+          <div>
+            <label className="block font-bold text-slate-700 mb-1">Position Needed</label>
+            <input
+              type="text"
+              required
+              placeholder="e.g. CDL Driver, Software Director..."
+              value={reqRoleNeeded}
+              onChange={e => setReqRoleNeeded(e.target.value)}
+              className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600"
+            />
+          </div>
+
+          <div>
+            <label className="block font-bold text-slate-700 mb-1">How Many Staff Needed?</label>
+            <select
+              value={reqStaffCount}
+              onChange={e => setReqStaffCount(e.target.value)}
+              className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-semibold text-slate-900 focus:outline-none focus:border-blue-600"
+            >
+              <option value="1 Candidate">1 Candidate</option>
+              <option value="2 - 5 Staff">2 - 5 Staff</option>
+              <option value="5 - 10 Staff">5 - 10 Staff</option>
+              <option value="10 - 25 Staff">10 - 25 Staff</option>
+              <option value="25 - 50 Staff">25 - 50 Staff</option>
+              <option value="50+ Bulk Staff">50+ Bulk Staff</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block font-bold text-slate-700 mb-1">Company / Your Name</label>
+            <input
+              type="text"
+              required
+              placeholder="John Smith"
+              value={reqName}
+              onChange={e => setReqName(e.target.value)}
+              className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600"
+            />
+          </div>
+
+          <div>
+            <label className="block font-bold text-slate-700 mb-1">Email Address</label>
+            <input
+              type="email"
+              required
+              placeholder="john@company.com"
+              value={reqEmail}
+              onChange={e => setReqEmail(e.target.value)}
+              className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600"
+            />
+          </div>
+
+          <div>
+            <label className="block font-bold text-slate-700 mb-1">Phone Number</label>
+            <input
+              type="tel"
+              required
+              placeholder="+971 50 123 4567"
+              value={reqPhone}
+              onChange={e => setReqPhone(e.target.value)}
+              className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600"
+            />
+          </div>
+
+          <div className="sm:col-span-2 lg:col-span-1 flex items-end">
+            <button
+              type="submit"
+              disabled={reqSubmitting}
+              className="w-full py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold flex items-center justify-center gap-2 shadow-md disabled:opacity-50 transition"
+            >
+              {reqSubmitting ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <>
+                  <Send className="w-4 h-4" />
+                  <span>Request Candidates</span>
+                </>
+              )}
+            </button>
+          </div>
+        </form>
+      )}
     </div>
   );
 }

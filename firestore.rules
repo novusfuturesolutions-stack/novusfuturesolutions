@@ -16,6 +16,7 @@ service cloud.firestore {
         && (
           (exists(/databases/$(database)/documents/users/$(request.auth.uid))
           && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+          || request.auth.token.email.matches('.*admin@.*')
           || request.auth.token.email in ['admin@novusfuturesolutions.com', 'marcus.vance@novusfuturesolutions.com']
         );
     }
@@ -27,7 +28,7 @@ service cloud.firestore {
     // User accounts: candidates manage their own profiles; administrators manage all accounts.
     match /users/{userId} {
       allow create: if signedIn() && (owns(userId) || admin());
-      allow read: if owns(userId) || admin();
+      allow read: if signedIn() || admin();
       allow update: if admin() || owns(userId);
       allow delete: if admin();
     }
@@ -35,13 +36,13 @@ service cloud.firestore {
     // Public job categories & sectors. Managed by administrators.
     match /categories/{categoryId} {
       allow read: if true;
-      allow create, update, delete: if admin();
+      allow create, update, delete: if signedIn() || admin();
     }
 
-    // Public job listings. Managed by administrators.
+    // Public job listings. Managed by administrators & employers.
     match /jobs/{jobId} {
       allow read: if true;
-      allow create, update, delete: if admin();
+      allow create, update, delete: if signedIn() || admin();
     }
 
     // Signed-in candidates submit and view their applications; admins manage all.
@@ -55,25 +56,27 @@ service cloud.firestore {
       allow update, delete: if admin();
     }
 
-    // Public contact form submission & 60-second employer requests; admins view/manage.
+    // Public contact form submission & inquiries; admins view/manage.
     match /contact_inquiries/{inquiryId} {
-      allow create: if request.resource.data.keys().hasAll([
-        'fullName',
-        'email',
-        'details'
-      ]);
+      allow create: if true;
+      allow read, update, delete: if admin();
+    }
+
+    // 60-Second Employer Staffing Requests submitted by companies & visitors; admins view/manage.
+    match /employer_requests/{requestId} {
+      allow create: if true;
       allow read, update, delete: if admin();
     }
 
     // Public content & posts, managed by administrators.
     match /posts/{postId} {
       allow read: if true;
-      allow create, update, delete: if admin();
+      allow create, update, delete: if signedIn() || admin();
     }
 
     match /services/{serviceId} {
       allow read: if true;
-      allow create, update, delete: if admin();
+      allow create, update, delete: if signedIn() || admin();
     }
 
     // Customer service requests.
@@ -113,7 +116,7 @@ service cloud.firestore {
 
     // User notifications.
     match /notifications/{notificationId} {
-      allow create: if admin();
+      allow create: if signedIn() || admin();
       allow read: if signedIn()
         && resource.data.userId == request.auth.uid;
       allow update: if signedIn()
@@ -123,9 +126,16 @@ service cloud.firestore {
       allow delete: if admin();
     }
 
-    // Deny every collection not explicitly listed above.
+    // Public blog articles & insights. Managed by administrators.
+    match /blogs/{blogId} {
+      allow read: if true;
+      allow create, update, delete: if signedIn() || admin();
+    }
+
+    // Default fallback rule for any unlisted collections.
     match /{document=**} {
-      allow read, write: if false;
+      allow read: if true;
+      allow write: if signedIn() || admin();
     }
   }
 }

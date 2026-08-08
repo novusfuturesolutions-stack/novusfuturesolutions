@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Bell, CircleUserRound, LogOut, ShieldCheck, UserRound, SlidersHorizontal } from 'lucide-react';
@@ -12,10 +12,12 @@ const links = [
   { href: '/jobs', label: 'Vacancies' },
   { href: '/professionals', label: 'For Candidates' },
   { href: '/companies', label: 'For Employers' },
+  { href: '/success-stories', label: 'Success Stories' },
+  { href: '/blog', label: 'Blog & Insights' },
   { href: '/about', label: 'About' },
 ];
 
-export function Navbar() {
+export const Navbar = memo(function Navbar() {
   const pathname = usePathname();
   const { user, isAdmin, signOut } = useAuth();
   const { toggleSidebar, notifications } = useApp();
@@ -28,7 +30,7 @@ export function Navbar() {
     <header className="pointer-events-none fixed inset-x-0 top-3 z-[80] hidden px-4 lg:block">
       <div className="pointer-events-auto relative mx-auto flex w-fit max-w-full items-center gap-2 rounded-full border border-blue-200/80 bg-white/90 p-1.5 shadow-[0_10px_30px_rgba(37,99,235,.15)] ring-1 ring-blue-100 backdrop-blur-2xl">
         <Link href="/" className="flex items-center pl-2 pr-1 group" aria-label="Novus Future Solutions Home">
-          <img src="/images/nfs-logo.png" alt="NFS Logo" className="h-6 w-auto object-contain transition-transform group-hover:scale-105" />
+          <img src="/images/nfs-logo.png" alt="NFS Logo" className="mobile-logo-blue h-7 w-auto object-contain transition-transform group-hover:scale-105" />
         </Link>
 
         <span className="h-5 w-px bg-slate-200" />
@@ -127,4 +129,4 @@ export function Navbar() {
       </div>
     </header>
   );
-}
+});

@@ -139,7 +139,7 @@ export const MOCK_COMPANIES: CompanyProfile[] = [
     city: 'Dubai',
     website: 'https://novusfuturesolutions.com',
     email: 'contact@novusfuturesolutions.com',
-    phone: '+971 4 800 6688',
+    phone: '+49 152 16405341 / +356 79379950',
     registrationNumber: 'NFS-REG-88941',
     verified: true,
     followersCount: 18400,

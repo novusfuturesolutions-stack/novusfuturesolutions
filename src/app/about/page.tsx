@@ -25,7 +25,7 @@ export default function AboutPage() {
 
         {/* Logo Banner Card */}
         <div className="p-8 rounded-3xl bg-white text-slate-900 border border-blue-100 shadow-md flex flex-col md:flex-row items-center gap-8">
-          <img src="/images/nfs-logo.png" alt="NFS Logo" className="w-36 h-auto bg-slate-50 border border-blue-200 rounded-2xl p-2 shrink-0 shadow-xs" />
+          <img src="/images/nfs-logo.png" alt="NFS Logo" className="mobile-logo-blue w-36 h-auto bg-slate-50 border border-blue-200 rounded-2xl p-2 shrink-0 shadow-xs object-contain" />
           <div className="space-y-3 text-center md:text-left">
             <h2 className="text-2xl font-extrabold text-slate-900">Our Mission & Core Purpose</h2>
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
@@ -96,14 +96,26 @@ export default function AboutPage() {
 
         {/* Global Network Card */}
         <div className="p-8 rounded-3xl bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 border border-blue-500/40 text-white text-center space-y-4 shadow-xl">
-          <h3 className="text-2xl font-extrabold text-white">Global Presence</h3>
+          <h3 className="text-2xl font-extrabold text-white">Global Hubs & Direct Representation</h3>
           <p className="text-xs sm:text-sm text-blue-100 max-w-xl mx-auto leading-relaxed">
-            Headquartered in Dubai, UAE, with operational hubs in London, Riyadh, Mumbai, and Berlin.
+            Connecting candidates and corporate employers across Germany, Lithuania, Europe, and Middle East.
           </p>
-          <Link href="/contact" className="inline-flex items-center gap-2 px-6 py-3 bg-white hover:bg-blue-50 text-blue-700 font-extrabold text-xs rounded-xl shadow-md transition-colors">
-            <span>Contact Global Offices</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
+
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-1 text-xs font-mono">
+            <a href="tel:+4915216405341" className="bg-white/15 hover:bg-white/25 px-4 py-2 rounded-xl border border-white/30 text-white font-bold transition-colors">
+              🇩🇪 Germany: +49 152 16405341
+            </a>
+            <a href="tel:+35679379950" className="bg-white/15 hover:bg-white/25 px-4 py-2 rounded-xl border border-white/30 text-white font-bold transition-colors">
+              🇱🇹 Lithuania: +356 79379950
+            </a>
+          </div>
+
+          <div className="pt-2">
+            <Link href="/contact" className="inline-flex items-center gap-2 px-6 py-3 bg-white hover:bg-blue-50 text-blue-700 font-extrabold text-xs rounded-xl shadow-md transition-colors">
+              <span>Contact Regional Offices</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
         </div>
 
       </div>

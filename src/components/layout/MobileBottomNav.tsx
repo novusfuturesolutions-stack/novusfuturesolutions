@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useApp } from '@/lib/context/AppContext';
 import { SidebarDrawer } from './SidebarDrawer';
 import { Home, Plus, Briefcase, LayoutDashboard, SlidersHorizontal, Users, Building2, Bell } from 'lucide-react';
 
-export const MobileBottomNav = () => {
+export const MobileBottomNav = memo(function MobileBottomNav() {
   const pathname = usePathname();
   const { currentUser, sidebarOpen, setSidebarOpen, notifications } = useApp();
   const [showNotifications, setShowNotifications] = useState(false);
@@ -159,4 +159,4 @@ export const MobileBottomNav = () => {
       <SidebarDrawer isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
     </>
   );
-};
+});
