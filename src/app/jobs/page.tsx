@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useApp } from '@/lib/context/AppContext';
 import { useAuth } from '@/lib/context/AuthContext';
 import {
@@ -22,10 +22,11 @@ import {
   Trash2
 } from 'lucide-react';
 
-export default function JobsPage() {
+function JobsPageContent() {
   const { jobs, categories, companies, savedJobIds, toggleSaveJob, applyForJob } = useApp();
   const { user } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   // Filters
   const [query, setQuery] = useState('');
@@ -35,6 +36,13 @@ export default function JobsPage() {
   const [workMode, setWorkMode] = useState('');
   const [visaOnly, setVisaOnly] = useState(false);
   const [urgentOnly, setUrgentOnly] = useState(false);
+
+  useEffect(() => {
+    const qParam = searchParams.get('q');
+    const locParam = searchParams.get('location');
+    if (qParam) setQuery(qParam);
+    if (locParam) setLocation(locParam);
+  }, [searchParams]);
 
   // Selected job for quick apply modal
   const [applyingJobId, setApplyingJobId] = useState<string | null>(null);
@@ -53,8 +61,8 @@ export default function JobsPage() {
   };
 
   const filteredJobs = jobs.filter(j => {
-    const matchesQuery = query === '' || j.title.toLowerCase().includes(query.toLowerCase()) || j.description.toLowerCase().includes(query.toLowerCase());
-    const matchesLoc = location === '' || j.location.toLowerCase().includes(location.toLowerCase()) || j.country.toLowerCase().includes(location.toLowerCase());
+    const matchesQuery = query === '' || j.title.toLowerCase().includes(query.toLowerCase()) || j.description.toLowerCase().includes(query.toLowerCase()) || j.requiredSkills.some(s => s.toLowerCase().includes(query.toLowerCase()));
+    const matchesLoc = location === '' || j.location.toLowerCase().includes(location.toLowerCase()) || j.country.toLowerCase().includes(location.toLowerCase()) || j.city.toLowerCase().includes(location.toLowerCase());
     const matchesCat = category === '' || j.category === category;
     const matchesType = jobType === '' || j.jobType === jobType;
     const matchesMode = workMode === '' || j.workMode === workMode;
@@ -78,20 +86,91 @@ export default function JobsPage() {
     }, 2000);
   };
 
+  // Structured Data (JSON-LD JobPosting schema for SEO Google Jobs indexing)
+  const jobPostingSchemas = filteredJobs.slice(0, 10).map(j => ({
+    '@context': 'https://schema.org/',
+    '@type': 'JobPosting',
+    title: j.title,
+    description: j.description,
+    identifier: {
+      '@type': 'PropertyValue',
+      name: j.companyName,
+      value: j.id
+    },
+    datePosted: j.postedAt,
+    validThrough: j.deadline,
+    employmentType: j.jobType === 'Full-time' ? 'FULL_TIME' : 'PART_TIME',
+    hiringOrganization: {
+      '@type': 'Organization',
+      name: j.companyName,
+      sameAs: j.companyWebsite || 'https://novusfuturesolutions.com',
+      logo: j.companyLogo || 'https://novusfuturesolutions.com/images/nfs-logo.png'
+    },
+    jobLocation: {
+      '@type': 'Place',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: j.city,
+        addressCountry: j.country
+      }
+    },
+    baseSalary: {
+      '@type': 'MonetaryAmount',
+      currency: j.currency,
+      value: {
+        '@type': 'QuantitativeValue',
+        minValue: j.salaryMin,
+        maxValue: j.salaryMax,
+        unitText: j.salaryPeriod === 'month' ? 'MONTH' : 'YEAR'
+      }
+    }
+  }));
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 py-10 px-4 sm:px-6 lg:px-8 space-y-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jobPostingSchemas) }}
+      />
+
       <div className="max-w-7xl mx-auto space-y-8">
         
         {/* Page Header */}
-        <div className="space-y-2 pt-6 md:pt-10">
-          <span className="text-xs font-bold uppercase tracking-wider text-blue-600">Verified Job Openings</span>
+        <div className="space-y-3 pt-6 md:pt-10">
+          <span className="text-xs font-bold uppercase tracking-wider text-blue-600">Verified Job Openings in Europe &amp; Worldwide</span>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2.5">
             <Briefcase className="w-8 h-8 text-blue-600 shrink-0" />
-            <span>Global Job Marketplace & Career Opportunities</span>
+            <span>Jobs in Europe: Warehouse Jobs, Heavy Driver Jobs &amp; English Speaking Vacancies</span>
           </h1>
           <p className="text-slate-600 text-sm max-w-3xl leading-relaxed">
-            Discover verified vacancies for Software Engineers, Healthcare Specialists, Financial Directors, Project Managers, CDL Drivers, and Sales Leaders worldwide.
+            Discover verified Jobs in Europe, Warehouse jobs, Heavydriver jobs, and English speaking jobs for foreigners &amp; Indian job seekers with visa sponsorship and relocation support.
           </p>
+
+          {/* Quick Target SEO Chips */}
+          <div className="flex flex-wrap items-center gap-2 pt-2 text-xs">
+            <span className="font-extrabold text-slate-500 text-[11px] uppercase tracking-wider">Quick Filters:</span>
+            {[
+              { label: '🇪🇺 Jobs in Europe', q: 'Europe' },
+              { label: '📦 Warehouse Jobs', q: 'Warehouse' },
+              { label: '🚚 Heavy Driver Jobs', q: 'Heavy Driver' },
+              { label: '🗣️ English Speaking Jobs in Europe', q: 'English Speaking' },
+              { label: '🇮🇳 Jobs for Indians in Europe', q: 'Jobs for Indians' },
+              { label: '🌍 Jobs for Foreigners in Europe', q: 'Jobs for Foreigners' },
+            ].map((chip, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => setQuery(chip.q)}
+                className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-bold transition-all border ${
+                  query === chip.q
+                    ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                    : 'bg-white text-slate-700 border-slate-200 hover:border-blue-500 hover:text-blue-600'
+                }`}
+              >
+                {chip.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Main Grid: Filters Sidebar + Job Listings */}
@@ -471,5 +550,18 @@ export default function JobsPage() {
       )}
 
     </div>
+  );
+}
+
+export default function JobsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-slate-50 py-20 text-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+        <p className="mt-3 text-xs font-bold text-slate-500">Loading vacancies...</p>
+      </div>
+    }>
+      <JobsPageContent />
+    </Suspense>
   );
 }

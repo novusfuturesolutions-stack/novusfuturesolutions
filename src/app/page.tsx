@@ -491,6 +491,27 @@ export default function HomePage() {
             </button>
           </form>
 
+          {/* Quick SEO Filter Chips */}
+          <div className="relative z-20 mt-4 flex flex-wrap items-center gap-2 text-xs">
+            <span className="font-extrabold text-blue-200 text-[11px] uppercase tracking-wider">Top Searches:</span>
+            {[
+              { label: '🇪🇺 Jobs in Europe', query: 'Europe' },
+              { label: '📦 Warehouse Jobs', query: 'Warehouse' },
+              { label: '🚚 Heavy Driver Jobs', query: 'Heavy Driver' },
+              { label: '🗣️ English Speaking Jobs in Europe', query: 'English Speaking' },
+              { label: '🇮🇳 Jobs for Indians in Europe', query: 'Jobs for Indians' },
+              { label: '🌍 Jobs for Foreigners in Europe', query: 'Jobs for Foreigners' },
+            ].map((chip, idx) => (
+              <Link
+                key={idx}
+                href={`/jobs?q=${encodeURIComponent(chip.query)}`}
+                className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-slate-900/60 px-3 py-1 text-[11px] font-bold text-white backdrop-blur-md transition-all hover:bg-blue-600 hover:border-blue-500 active:scale-95"
+              >
+                {chip.label}
+              </Link>
+            ))}
+          </div>
+
         </div>
       </section>
 
@@ -856,6 +877,110 @@ export default function HomePage() {
               <div className="text-4xl font-light leading-none tracking-tight text-slate-900 sm:text-7xl">100+</div>
               <div className="text-[9px] font-semibold uppercase leading-relaxed tracking-[.07em] text-slate-500 sm:max-w-xs sm:text-sm">
                 Countries Connected
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* 6. DEDICATED SEO CONTENT & FAQ SECTION FOR EUROPEAN JOBS */}
+      <section data-scroll-reveal className="py-16 bg-white border-t border-slate-200 text-slate-900">
+        <div className="mx-auto w-full max-w-[1536px] px-3 sm:px-6 lg:px-8 space-y-12">
+          
+          <div className="text-center max-w-4xl mx-auto space-y-3">
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-extrabold border border-blue-200">
+              <span>Career Guidance &amp; European Hiring Portal</span>
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+              Jobs in Europe: <span className="text-blue-600">Warehouse Jobs, Heavy Driver Jobs &amp; English Speaking Vacancies</span>
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
+              Novus Future Solutions (NFS) connects foreign job seekers, skilled professionals, and Indian applicants with top European corporate employers offering visa sponsorship, accommodation, and fast work permit processing.
+            </p>
+          </div>
+
+          {/* 4 Feature Cards for Keywords */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-lg">🇪🇺</div>
+              <h3 className="font-extrabold text-slate-900 text-base">Jobs in Europe</h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Explore verified vacancies across Germany, Netherlands, Poland, and UK. Full visa support for international job seekers.
+              </p>
+              <Link href="/jobs?q=Europe" className="text-xs font-extrabold text-blue-600 hover:underline inline-flex items-center gap-1">
+                Browse European Jobs →
+              </Link>
+            </div>
+
+            <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-lg">📦</div>
+              <h3 className="font-extrabold text-slate-900 text-base">Warehouse Jobs</h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Fulfillment supervisors, forklift operators, and inventory associates in top European logistics hubs with accommodation.
+              </p>
+              <Link href="/jobs?q=Warehouse" className="text-xs font-extrabold text-blue-600 hover:underline inline-flex items-center gap-1">
+                Explore Warehouse Roles →
+              </Link>
+            </div>
+
+            <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-lg">🚚</div>
+              <h3 className="font-extrabold text-slate-900 text-base">Heavy Driver Jobs</h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Class CE long-haul trailer drivers needed across Germany, Poland, and EU corridors. High salary packages &amp; Code 95 support.
+              </p>
+              <Link href="/jobs?q=Heavy+Driver" className="text-xs font-extrabold text-blue-600 hover:underline inline-flex items-center gap-1">
+                View Heavy Driver Jobs →
+              </Link>
+            </div>
+
+            <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-lg">🗣️</div>
+              <h3 className="font-extrabold text-slate-900 text-base">English Speaking &amp; Foreigners</h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                No local language barriers! Find English speaking jobs in Europe tailored for foreigners and Indian applicants with relocation support.
+              </p>
+              <Link href="/jobs?q=English+Speaking" className="text-xs font-extrabold text-blue-600 hover:underline inline-flex items-center gap-1">
+                See English Speaking Jobs →
+              </Link>
+            </div>
+          </div>
+
+          {/* Frequently Asked Questions (SEO Structured Content) */}
+          <div className="bg-slate-50 p-6 sm:p-10 rounded-3xl border border-blue-100 space-y-6">
+            <div className="border-b border-slate-200 pb-4">
+              <h3 className="text-xl font-black text-slate-900">Frequently Asked Questions — Jobs in Europe</h3>
+              <p className="text-xs text-slate-500 mt-1">Everything you need to know about working in Europe as a foreign candidate or Indian national.</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs leading-relaxed text-slate-700">
+              <div className="space-y-2 bg-white p-5 rounded-2xl border border-slate-200">
+                <h4 className="font-extrabold text-slate-900 text-sm">How can I find English speaking jobs in Europe?</h4>
+                <p>
+                  Many global companies in Germany, the Netherlands, and Poland operate entirely in English. NFS features verified listings for English speaking jobs in Europe across logistics, customer support, IT, and heavy driving.
+                </p>
+              </div>
+
+              <div className="space-y-2 bg-white p-5 rounded-2xl border border-slate-200">
+                <h4 className="font-extrabold text-slate-900 text-sm">Are there Warehouse jobs and Heavy Driver jobs with visa sponsorship?</h4>
+                <p>
+                  Yes! European employers regularly sponsor work visas for qualified heavy drivers (Class CE) and warehouse logistics operators. Many packages include accommodation, flight tickets, and Code 95 driver qualification.
+                </p>
+              </div>
+
+              <div className="space-y-2 bg-white p-5 rounded-2xl border border-slate-200">
+                <h4 className="font-extrabold text-slate-900 text-sm">Are there specific jobs for Indians and foreigners in Europe?</h4>
+                <p>
+                  Absolutely. European companies actively recruit candidates from India and international locations for technical, driving, healthcare, and warehouse management roles. Apply directly through NFS to get full work permit guidance.
+                </p>
+              </div>
+
+              <div className="space-y-2 bg-white p-5 rounded-2xl border border-slate-200">
+                <h4 className="font-extrabold text-slate-900 text-sm">What credentials do Heavy Drivers need in Europe?</h4>
+                <p>
+                  Heavy drivers need a valid heavy vehicle driving license (CDL Class CE) and Code 95 driver qualification. NFS partner companies assist qualified foreign and Indian drivers with European license conversions.
+                </p>
               </div>
             </div>
           </div>
