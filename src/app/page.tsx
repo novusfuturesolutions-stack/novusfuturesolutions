@@ -491,25 +491,38 @@ export default function HomePage() {
             </button>
           </form>
 
-          {/* Quick SEO Filter Chips */}
-          <div className="relative z-20 mt-4 flex flex-wrap items-center gap-2 text-xs">
-            <span className="font-extrabold text-blue-200 text-[11px] uppercase tracking-wider">Top Searches:</span>
-            {[
-              { label: '🇪🇺 Jobs in Europe', query: 'Europe' },
-              { label: '📦 Warehouse Jobs', query: 'Warehouse' },
-              { label: '🚚 Heavy Driver Jobs', query: 'Heavy Driver' },
-              { label: '🗣️ English Speaking Jobs in Europe', query: 'English Speaking' },
-              { label: '🇮🇳 Jobs for Indians in Europe', query: 'Jobs for Indians' },
-              { label: '🌍 Jobs for Foreigners in Europe', query: 'Jobs for Foreigners' },
-            ].map((chip, idx) => (
-              <Link
-                key={idx}
-                href={`/jobs?q=${encodeURIComponent(chip.query)}`}
-                className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-slate-900/60 px-3 py-1 text-[11px] font-bold text-white backdrop-blur-md transition-all hover:bg-blue-600 hover:border-blue-500 active:scale-95"
-              >
-                {chip.label}
-              </Link>
-            ))}
+          {/* Quick SEO Filter Chips (Continuous Auto-slide Ticker) */}
+          <div className="relative z-20 mt-4 flex items-center gap-3 overflow-hidden rounded-full border border-white/20 bg-slate-950/70 py-1.5 px-3 backdrop-blur-md shadow-lg">
+            <span className="shrink-0 font-black text-blue-400 text-[10px] uppercase tracking-wider flex items-center gap-1.5 border-r border-white/20 pr-3">
+              <span className="h-2 w-2 rounded-full bg-blue-400 animate-ping" />
+              Top Searches:
+            </span>
+            <div className="relative flex-1 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]">
+              <div className="flex w-max animate-marquee gap-2.5 hover:[animation-play-state:paused]">
+                {[
+                  { label: '🇪🇺 Jobs in Europe', query: 'Europe' },
+                  { label: '📦 Warehouse Jobs', query: 'Warehouse' },
+                  { label: '🚚 Heavy Driver Jobs', query: 'Heavy Driver' },
+                  { label: '🗣️ English Speaking Jobs in Europe', query: 'English Speaking' },
+                  { label: '🇮🇳 Jobs for Indians in Europe', query: 'Jobs for Indians' },
+                  { label: '🌍 Jobs for Foreigners in Europe', query: 'Jobs for Foreigners' },
+                  { label: '🇪🇺 Jobs in Europe', query: 'Europe' },
+                  { label: '📦 Warehouse Jobs', query: 'Warehouse' },
+                  { label: '🚚 Heavy Driver Jobs', query: 'Heavy Driver' },
+                  { label: '🗣️ English Speaking Jobs in Europe', query: 'English Speaking' },
+                  { label: '🇮🇳 Jobs for Indians in Europe', query: 'Jobs for Indians' },
+                  { label: '🌍 Jobs for Foreigners in Europe', query: 'Jobs for Foreigners' },
+                ].map((chip, idx) => (
+                  <Link
+                    key={idx}
+                    href={`/jobs?q=${encodeURIComponent(chip.query)}`}
+                    className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3.5 py-1 text-[11px] font-extrabold text-white backdrop-blur-md transition-all hover:bg-blue-600 hover:border-blue-400 hover:scale-105 active:scale-95 shadow-xs"
+                  >
+                    {chip.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
           </div>
 
         </div>
