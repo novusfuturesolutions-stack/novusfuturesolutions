@@ -3,8 +3,10 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://novusfuturesolutions.com
+Host: https://www.novusfuturesolutions.com
 
 # Sitemaps
-Sitemap: https://novusfuturesolutions.com/sitemap.txt
+Sitemap: https://www.novusfuturesolutions.com/sitemap.xml
+Sitemap: https://www.novusfuturesolutions.com/sitemap.txt
 Sitemap: https://novusfuturesolutions.com/sitemap.xml
+Sitemap: https://novusfuturesolutions.com/sitemap.txt
