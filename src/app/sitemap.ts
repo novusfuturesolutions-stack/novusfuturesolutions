@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://www.novusfuturesolutions.com';
+  const baseUrl = 'https://novusfuturesolutions.com';
   const routes = ['', '/jobs', '/professionals', '/companies', '/about', '/contact', '/blog', '/success-stories'];
 
   return routes.map((route) => ({
