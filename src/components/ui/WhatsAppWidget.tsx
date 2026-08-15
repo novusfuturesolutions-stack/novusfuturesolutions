@@ -71,9 +71,6 @@ export function WhatsAppWidget() {
           className="group relative flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-[#25D366] p-2 shadow-[0_10px_30px_rgba(37,211,102,.5)] ring-4 ring-white/40 transition-all duration-300 hover:scale-110 hover:bg-[#20ba5a] hover:shadow-[0_15px_35px_rgba(37,211,102,.75)] active:scale-95"
           aria-label="Chat on WhatsApp"
         >
-          {/* Animated Glow Pulse */}
-          <span className="absolute inset-0 -z-10 rounded-full bg-[#25D366] opacity-60 animate-ping" />
-
           {/* Standalone Circular Image Container */}
           <div className="relative h-full w-full rounded-full bg-white/20 overflow-hidden flex items-center justify-center p-0.5">
             <img

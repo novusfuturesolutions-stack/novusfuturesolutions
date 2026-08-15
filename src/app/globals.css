@@ -532,8 +532,9 @@
   scrollbar-width: none;
 }
 
-.mobile-logo-blue {
-  filter: brightness(0) saturate(100%) invert(36%) sepia(99%) saturate(4385%) hue-rotate(217deg) brightness(99%) contrast(100%);
+.mobile-logo-blue,
+.nfs-logo-blue-white {
+  filter: hue-rotate(185deg) saturate(1.4) brightness(1.05);
 }
 
 /* Custom Scrollbars */

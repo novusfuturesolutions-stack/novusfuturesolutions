@@ -271,7 +271,7 @@ export default function HomePage() {
               <img
                 src="/images/nfs-logo.png"
                 alt="Novus Future Solutions Logo"
-                className="h-10 sm:h-12 w-auto object-contain transition-transform group-hover:scale-105"
+                className="h-10 sm:h-12 w-auto object-contain transition-transform group-hover:scale-105 nfs-logo-blue-white"
               />
             </Link>
 

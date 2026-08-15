@@ -43,8 +43,8 @@ export const Footer = memo(function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 text-xs text-slate-600 pt-6 border-t border-slate-200">
           <div>
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center p-2 shadow-md shadow-blue-600/30 shrink-0">
-                <img src="/images/nfs-logo.png" alt="NFS Logo" className="w-full h-full object-contain brightness-0 invert" />
+              <div className="h-10 w-auto rounded-xl bg-slate-950 px-3 py-1.5 flex items-center justify-center border border-blue-600/50 shadow-md shadow-blue-600/20 shrink-0">
+                <img src="/images/nfs-logo.png" alt="NFS Logo" className="h-full w-auto object-contain nfs-logo-blue-white" />
               </div>
               <span className="font-black text-base text-slate-900 tracking-tight">Novus Future Solutions</span>
             </div>
