@@ -8,13 +8,9 @@ import { useAuth } from '@/lib/context/AuthContext';
 import { useApp } from '@/lib/context/AppContext';
 
 const links = [
-  { href: '/', label: 'Home' },
-  { href: '/jobs', label: 'Vacancies' },
-  { href: '/professionals', label: 'For Candidates' },
-  { href: '/companies', label: 'For Employers' },
-  { href: '/success-stories', label: 'Success Stories' },
-  { href: '/blog', label: 'Blog & Insights' },
-  { href: '/about', label: 'About' },
+  { href: '/jobs', label: '1. For Job Seekers' },
+  { href: '/services', label: '2. Services' },
+  { href: '/companies', label: '3. For Employer' },
 ];
 
 export const Navbar = memo(function Navbar() {

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useApp } from '@/lib/context/AppContext';
 import { SidebarDrawer } from './SidebarDrawer';
-import { Home, Plus, Briefcase, LayoutDashboard, SlidersHorizontal, Users, Building2, Bell } from 'lucide-react';
+import { Home, Plus, Briefcase, LayoutDashboard, SlidersHorizontal, Users, Building2, Bell, ShieldCheck } from 'lucide-react';
 
 export const MobileBottomNav = memo(function MobileBottomNav() {
   const pathname = usePathname();
@@ -22,17 +22,10 @@ export const MobileBottomNav = memo(function MobileBottomNav() {
     }
   };
 
-  const navItems = [
-    { href: '/', label: 'Home', icon: Home },
-    { href: '/jobs', label: 'Vacancies', icon: Briefcase, badge: 'HOT' },
-    {
-      href: '/contact',
-      label: 'Contact',
-      icon: Plus,
-      isCenter: true
-    },
-    { href: '/professionals', label: 'Candidates', icon: Users },
-    { href: '/companies', label: 'Employers', icon: Building2 }
+  const navItems: { href: string; label: string; icon: any; isCenter?: boolean; badge?: string }[] = [
+    { href: '/jobs', label: '1. Job Seekers', icon: Briefcase },
+    { href: '/services', label: '2. Services', icon: ShieldCheck },
+    { href: '/companies', label: '3. Employer', icon: Building2 }
   ];
 
   return (

@@ -29,10 +29,16 @@ import {
   Send,
   Loader2,
   Headphones,
-  Zap
+  Sparkles,
+  Zap,
+  Globe,
+  Package,
+  Boxes,
+  Languages
 } from 'lucide-react';
 import { useApp } from '@/lib/context/AppContext';
 import { useAuth } from '@/lib/context/AuthContext';
+import { MOCK_JOBS } from '@/lib/data/mockData';
 import { db } from '@/lib/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
@@ -236,7 +242,11 @@ export default function HomePage() {
     item.detail.toLowerCase().includes(locationQuery.toLowerCase())
   );
 
-  const displayJobs = jobs.filter(j => selectedCategory === 'all' || j.category === selectedCategory);
+  const allAvailableJobs = Array.from(
+    new Map([...jobs, ...MOCK_JOBS].map(item => [item.id || item.title, item])).values()
+  );
+
+  const displayJobs = allAvailableJobs.filter(j => selectedCategory === 'all' || j.category === selectedCategory);
 
   return (
     <div className="page-intro min-h-screen bg-slate-50 pb-24 font-sans text-slate-900 selection:bg-blue-600 selection:text-white lg:pb-16">
@@ -265,15 +275,13 @@ export default function HomePage() {
               />
             </Link>
 
-            <nav className="flex items-center rounded-full border border-blue-200/80 bg-white/95 p-1 text-[10px] font-semibold text-slate-800 shadow-md backdrop-blur-xl">
+            <nav className="flex items-center rounded-full border border-blue-200/80 bg-white/95 p-1 text-[11px] font-extrabold text-slate-800 shadow-md backdrop-blur-xl">
               {[
-                { href: '/', label: 'Home' },
-                { href: '/jobs', label: 'Vacancies' },
-                { href: '/professionals', label: 'For Candidates' },
-                { href: '/companies', label: 'For Employers' },
-                { href: '/about', label: 'About' },
+                { href: '/jobs', label: '1. For Job Seekers' },
+                { href: '/services', label: '2. Services' },
+                { href: '/companies', label: '3. For Employer' },
               ].map(link => (
-                <Link key={link.href} href={link.href} className={`whitespace-nowrap rounded-full px-3 py-2 transition ${link.href === '/' ? 'bg-blue-600 text-white shadow-sm font-bold' : 'text-slate-700 hover:text-blue-600 hover:bg-blue-50'}`}>
+                <Link key={link.href} href={link.href} className="whitespace-nowrap rounded-full px-4 py-2 text-slate-800 hover:text-blue-600 hover:bg-blue-50 transition-all font-extrabold">
                   {link.label}
                 </Link>
               ))}
@@ -375,154 +383,91 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* Search bar */}
-          <form action="/jobs" className="absolute inset-x-4 bottom-4 z-50 grid gap-2 rounded-[1.5rem] border border-blue-200 bg-white p-2.5 shadow-[0_18px_45px_rgba(37,99,235,.15)] sm:relative sm:inset-auto sm:mt-8 sm:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)_auto] sm:gap-2.5 sm:rounded-2xl sm:p-2">
+
+
+          {/* 3 Main Gateway Options Bar: 1. For Job Seekers | 2. Services | 3. For Employer */}
+          <div className="relative z-20 mt-6 grid grid-cols-1 gap-3.5 sm:grid-cols-3 sm:gap-4">
             
-            <div className="relative z-50">
-              <label className="flex h-14 items-center rounded-xl border border-slate-200 bg-slate-50 px-4 transition-all focus-within:border-blue-500 focus-within:bg-white">
-                <Search className="h-4 w-4 shrink-0 text-blue-600" />
-                <input
-                  name="q"
-                  type="text"
-                  value={keywordQuery}
-                  onChange={(e) => {
-                    setKeywordQuery(e.target.value);
-                    setShowKeywordSuggestions(true);
-                  }}
-                  onFocus={() => setShowKeywordSuggestions(true)}
-                  onBlur={() => setTimeout(() => setShowKeywordSuggestions(false), 250)}
-                  placeholder="Job title, CDL Driver, Nurse, Executive (e.g. Software Engineer, CE Driver)..."
-                  className="h-full min-w-0 w-full bg-transparent px-3 text-sm font-medium text-slate-900 outline-none placeholder:text-slate-400"
-                />
-              </label>
-
-              {showKeywordSuggestions && (
-                <div className="absolute left-0 right-0 top-full mt-1.5 z-[999] w-full rounded-2xl border border-blue-200 bg-white py-2 px-1 text-slate-900 shadow-2xl overflow-hidden">
-                  <div className="max-h-52 overflow-y-auto space-y-0.5">
-                    {filteredKeywords.length === 0 ? (
-                      <div className="px-4 py-3 text-xs text-slate-500 text-center font-medium">No matching suggestions</div>
-                    ) : (
-                      filteredKeywords.map((item, idx) => (
-                        <button
-                          key={idx}
-                          type="button"
-                          onMouseDown={() => {
-                            setKeywordQuery(item.title);
-                            setShowKeywordSuggestions(false);
-                          }}
-                          className="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-blue-50 transition-colors flex items-center justify-between gap-3 group"
-                        >
-                          <div className="flex items-center gap-3 min-w-0 flex-1">
-                            <Search className="w-4 h-4 text-blue-600 shrink-0" />
-                            <div className="min-w-0 flex-1">
-                              <div className="text-xs font-bold text-slate-900 truncate">{item.title}</div>
-                              <div className="text-[11px] text-slate-500 font-medium truncate">{item.category}</div>
-                            </div>
-                          </div>
-                          <span className="text-[11px] font-semibold text-blue-600 shrink-0">
-                            {item.count}
-                          </span>
-                        </button>
-                      ))
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <div className="relative z-50">
-              <label className="flex h-14 items-center rounded-xl border border-slate-200 bg-slate-50 px-4 transition-all focus-within:border-blue-500 focus-within:bg-white">
-                <MapPin className="h-4 w-4 shrink-0 text-blue-600" />
-                <input
-                  name="location"
-                  type="text"
-                  value={locationQuery}
-                  onChange={(e) => {
-                    setLocationQuery(e.target.value);
-                    setShowLocationSuggestions(true);
-                  }}
-                  onFocus={() => setShowLocationSuggestions(true)}
-                  onBlur={() => setTimeout(() => setShowLocationSuggestions(false), 250)}
-                  placeholder="City, country, or postal code"
-                  className="h-full min-w-0 w-full bg-transparent px-3 text-sm font-medium text-slate-900 outline-none placeholder:text-slate-400"
-                />
-              </label>
-
-              {showLocationSuggestions && (
-                <div className="absolute left-0 right-0 top-full mt-1.5 z-[999] w-full rounded-2xl border border-blue-200 bg-white py-2 px-1 text-slate-900 shadow-2xl overflow-hidden">
-                  <div className="max-h-52 overflow-y-auto space-y-0.5">
-                    {filteredLocations.length === 0 ? (
-                      <div className="px-4 py-3 text-xs text-slate-500 text-center font-medium">No matching locations</div>
-                    ) : (
-                      filteredLocations.map((item, idx) => (
-                        <button
-                          key={idx}
-                          type="button"
-                          onMouseDown={() => {
-                            setLocationQuery(item.name);
-                            setShowLocationSuggestions(false);
-                          }}
-                          className="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-blue-50 transition-colors flex items-center justify-between gap-3 group"
-                        >
-                          <div className="flex items-center gap-3 min-w-0 flex-1">
-                            <MapPin className="w-4 h-4 text-blue-600 shrink-0" />
-                            <div className="min-w-0 flex-1">
-                              <div className="text-xs font-bold text-slate-900 truncate">{item.name}</div>
-                              <div className="text-[11px] text-slate-500 font-medium truncate">{item.detail}</div>
-                            </div>
-                          </div>
-                        </button>
-                      ))
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <button
-              type="submit"
-              className="group relative h-14 overflow-hidden rounded-xl bg-blue-600 px-7 text-sm font-extrabold text-white shadow-md transition-all duration-300 hover:bg-blue-700 sm:min-w-48"
+            {/* 1. For Job Seekers */}
+            <Link
+              href="/jobs"
+              onClick={(e) => {
+                const el = document.getElementById('vacancies-section');
+                if (el) {
+                  e.preventDefault();
+                  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+              }}
+              className="group relative isolate flex items-center gap-3.5 overflow-hidden rounded-2xl border-2 border-blue-400/80 bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 p-4 text-white shadow-xl shadow-blue-600/30 transition-all duration-300 hover:scale-[1.03] hover:border-white hover:shadow-2xl active:scale-95"
             >
-              <span className="relative flex items-center justify-center gap-2">
-                <Search className="h-4 w-4 stroke-[2.5]" />
-                Search vacancies
-                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-              </span>
-            </button>
-          </form>
-
-          {/* Quick SEO Filter Chips (Continuous Auto-slide Ticker) */}
-          <div className="relative z-20 mt-4 flex items-center gap-3 overflow-hidden rounded-full border border-white/20 bg-slate-950/70 py-1.5 px-3 backdrop-blur-md shadow-lg">
-            <span className="shrink-0 font-black text-blue-400 text-[10px] uppercase tracking-wider flex items-center gap-1.5 border-r border-white/20 pr-3">
-              <span className="h-2 w-2 rounded-full bg-blue-400 animate-ping" />
-              Top Searches:
-            </span>
-            <div className="relative flex-1 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]">
-              <div className="flex w-max animate-marquee gap-2.5 hover:[animation-play-state:paused]">
-                {[
-                  { label: '🇪🇺 Jobs in Europe', query: 'Europe' },
-                  { label: '📦 Warehouse Jobs', query: 'Warehouse' },
-                  { label: '🚚 Heavy Driver Jobs', query: 'Heavy Driver' },
-                  { label: '🗣️ English Speaking Jobs in Europe', query: 'English Speaking' },
-                  { label: '🇮🇳 Jobs for Indians in Europe', query: 'Jobs for Indians' },
-                  { label: '🌍 Jobs for Foreigners in Europe', query: 'Jobs for Foreigners' },
-                  { label: '🇪🇺 Jobs in Europe', query: 'Europe' },
-                  { label: '📦 Warehouse Jobs', query: 'Warehouse' },
-                  { label: '🚚 Heavy Driver Jobs', query: 'Heavy Driver' },
-                  { label: '🗣️ English Speaking Jobs in Europe', query: 'English Speaking' },
-                  { label: '🇮🇳 Jobs for Indians in Europe', query: 'Jobs for Indians' },
-                  { label: '🌍 Jobs for Foreigners in Europe', query: 'Jobs for Foreigners' },
-                ].map((chip, idx) => (
-                  <Link
-                    key={idx}
-                    href={`/jobs?q=${encodeURIComponent(chip.query)}`}
-                    className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3.5 py-1 text-[11px] font-extrabold text-white backdrop-blur-md transition-all hover:bg-blue-600 hover:border-blue-400 hover:scale-105 active:scale-95 shadow-xs"
-                  >
-                    {chip.label}
-                  </Link>
-                ))}
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/20 backdrop-blur-md text-white border border-white/40 shadow-inner">
+                <Briefcase className="h-6 w-6 stroke-[2.2]" />
               </div>
-            </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2">
+                  <span className="rounded-md bg-amber-400 px-1.5 py-0.5 text-[10px] font-black text-slate-950 shadow-xs">1</span>
+                  <h4 className="text-sm font-black tracking-wide text-white">For Job Seekers</h4>
+                </div>
+                <p className="mt-0.5 text-xs font-semibold text-blue-100 truncate">
+                  5,000+ Vacancies &amp; Fast Apply
+                </p>
+              </div>
+              <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-white/20 text-white border border-white/30 group-hover:bg-white group-hover:text-blue-700 transition-colors">
+                <ArrowRight className="h-4 w-4 stroke-[2.5]" />
+              </div>
+            </Link>
+
+            {/* 2. Services */}
+            <Link
+              href="/services"
+              className="group relative isolate flex items-center gap-3.5 overflow-hidden rounded-2xl border-2 border-blue-500 bg-white p-4 text-slate-900 shadow-xl shadow-blue-500/15 transition-all duration-300 hover:scale-[1.03] hover:border-blue-600 hover:shadow-2xl active:scale-95"
+            >
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-50 border border-blue-200 text-blue-600 shadow-xs">
+                <ShieldCheck className="h-6 w-6 stroke-[2.2]" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2">
+                  <span className="rounded-md bg-blue-600 px-1.5 py-0.5 text-[10px] font-black text-white shadow-xs">2</span>
+                  <h4 className="text-sm font-black tracking-wide text-slate-900">Services</h4>
+                </div>
+                <p className="mt-0.5 text-xs font-bold text-blue-600 truncate">
+                  Verification &amp; Headhunting
+                </p>
+              </div>
+              <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-blue-50 text-blue-600 border border-blue-200 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                <ArrowRight className="h-4 w-4 stroke-[2.5]" />
+              </div>
+            </Link>
+
+            {/* 3. For Employer */}
+            <Link
+              href="/companies"
+              onClick={(e) => {
+                const el = document.getElementById('employer-request-section');
+                if (el) {
+                  e.preventDefault();
+                  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+              }}
+              className="group relative isolate flex items-center gap-3.5 overflow-hidden rounded-2xl border-2 border-cyan-400/80 bg-gradient-to-r from-slate-900 via-slate-950 to-blue-950 p-4 text-white shadow-xl shadow-slate-900/40 transition-all duration-300 hover:scale-[1.03] hover:border-cyan-300 hover:shadow-2xl active:scale-95"
+            >
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-cyan-500/20 border border-cyan-400/40 text-cyan-300 shadow-inner">
+                <Building2 className="h-6 w-6 stroke-[2.2]" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2">
+                  <span className="rounded-md bg-cyan-400 px-1.5 py-0.5 text-[10px] font-black text-slate-950 shadow-xs">3</span>
+                  <h4 className="text-sm font-black tracking-wide text-white">For Employer</h4>
+                </div>
+                <p className="mt-0.5 text-xs font-semibold text-cyan-200 truncate">
+                  Request Staff &amp; Hire Talent
+                </p>
+              </div>
+              <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 group-hover:bg-cyan-400 group-hover:text-slate-950 transition-colors">
+                <ArrowRight className="h-4 w-4 stroke-[2.5]" />
+              </div>
+            </Link>
+
           </div>
 
         </div>
@@ -531,45 +476,55 @@ export default function HomePage() {
 
 
       {/* 3. 60-SECOND EMPLOYER CANDIDATE REQUEST BAR (FIREBASE SYNC) */}
-      <section data-scroll-reveal className="mx-auto w-full max-w-[1536px] px-3 py-8 sm:px-6 lg:px-8">
-        <div className="space-y-6 rounded-2xl border border-blue-100 bg-white p-5 text-slate-900 shadow-xl sm:rounded-3xl sm:p-8">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <section id="employer-request-section" data-scroll-reveal className="mx-auto w-full max-w-[1536px] px-3 py-8 sm:px-6 lg:px-8">
+        <div className="space-y-6 rounded-3xl border-2 border-blue-200/80 bg-gradient-to-br from-white via-blue-50/40 to-white p-6 text-slate-900 shadow-2xl sm:p-10 relative overflow-hidden">
+          {/* Ambient Background Glow */}
+          <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-500/10 blur-3xl" />
+          <div className="pointer-events-none absolute -left-20 -bottom-20 h-64 w-64 rounded-full bg-cyan-500/10 blur-3xl" />
+
+          <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-bold border border-blue-200">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-600 text-white text-xs font-black shadow-md shadow-blue-600/20">
                 <Headphones className="w-3.5 h-3.5" />
                 <span>60-Second Employer Request</span>
               </div>
-              <h3 className="text-2xl font-black text-slate-900 mt-2">Need Staff or Executives Urgently?</h3>
-              <p className="text-xs text-slate-500">Submit your requirement below and our team will call you within 15 minutes.</p>
+              <h3 className="text-2xl sm:text-3xl font-black text-slate-900 mt-2.5 tracking-tight">Need Staff or Executives Urgently?</h3>
+              <p className="text-xs sm:text-sm font-medium text-slate-600 mt-1">Submit your staffing requirement below and our senior recruitment team will call you within 15 minutes.</p>
+            </div>
+            <div className="hidden lg:flex items-center gap-2 rounded-2xl bg-emerald-50 px-4 py-2 border border-emerald-200 text-emerald-700 text-xs font-extrabold shrink-0">
+              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Recruiters Active Now (15 Min Response)</span>
             </div>
           </div>
 
           {reqSuccess ? (
-            <div className="p-6 rounded-2xl bg-blue-50 border border-blue-200 text-center space-y-2">
-              <CheckCircle2 className="w-8 h-8 text-blue-600 mx-auto" />
-              <h4 className="font-bold text-slate-900 text-base">Request Received!</h4>
-              <p className="text-xs text-slate-600">Our senior staffing manager will call your contact number shortly.</p>
+            <div className="relative z-10 p-8 rounded-2xl bg-emerald-50 border border-emerald-200 text-center space-y-2.5 animate-in fade-in duration-300">
+              <CheckCircle2 className="w-10 h-10 text-emerald-600 mx-auto" />
+              <h4 className="font-black text-slate-900 text-lg">Staffing Request Received!</h4>
+              <p className="text-xs text-slate-600 font-medium max-w-md mx-auto">
+                Thank you! Our enterprise hiring manager will call your phone number directly to verify your candidate requirements.
+              </p>
             </div>
           ) : (
-            <form onSubmit={handleEmployerRequest} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 text-xs">
+            <form onSubmit={handleEmployerRequest} className="relative z-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3.5 text-xs">
               <div>
-                <label className="block font-bold text-slate-700 mb-1">Position Needed</label>
+                <label className="block font-black text-slate-800 mb-1.5">Position Needed</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. CDL Driver, Software Director..."
                   value={reqRoleNeeded}
                   onChange={e => setReqRoleNeeded(e.target.value)}
-                  className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600"
+                  className="w-full p-3.5 bg-white border border-slate-200 rounded-xl text-slate-900 font-semibold placeholder-slate-400 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 shadow-2xs transition-all"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">How Many Staff Needed?</label>
+                <label className="block font-black text-slate-800 mb-1.5">How Many Staff Needed?</label>
                 <select
                   value={reqStaffCount}
                   onChange={e => setReqStaffCount(e.target.value)}
-                  className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-semibold text-slate-900 focus:outline-none focus:border-blue-600"
+                  className="w-full p-3.5 bg-white border border-slate-200 rounded-xl font-bold text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 shadow-2xs transition-all"
                 >
                   <option value="1 Candidate">1 Candidate</option>
                   <option value="2 - 5 Staff">2 - 5 Staff</option>
@@ -581,38 +536,38 @@ export default function HomePage() {
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">Company / Your Name</label>
+                <label className="block font-black text-slate-800 mb-1.5">Company / Your Name</label>
                 <input
                   type="text"
                   required
                   placeholder="John Smith"
                   value={reqName}
                   onChange={e => setReqName(e.target.value)}
-                  className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600"
+                  className="w-full p-3.5 bg-white border border-slate-200 rounded-xl text-slate-900 font-semibold placeholder-slate-400 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 shadow-2xs transition-all"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">Email Address</label>
+                <label className="block font-black text-slate-800 mb-1.5">Email Address</label>
                 <input
                   type="email"
                   required
                   placeholder="john@company.com"
                   value={reqEmail}
                   onChange={e => setReqEmail(e.target.value)}
-                  className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600"
+                  className="w-full p-3.5 bg-white border border-slate-200 rounded-xl text-slate-900 font-semibold placeholder-slate-400 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 shadow-2xs transition-all"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">Phone Number</label>
+                <label className="block font-black text-slate-800 mb-1.5">Phone Number</label>
                 <input
                   type="tel"
                   required
                   placeholder="+971 50 123 4567"
                   value={reqPhone}
                   onChange={e => setReqPhone(e.target.value)}
-                  className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600"
+                  className="w-full p-3.5 bg-white border border-slate-200 rounded-xl text-slate-900 font-semibold placeholder-slate-400 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 shadow-2xs transition-all"
                 />
               </div>
 
@@ -620,7 +575,7 @@ export default function HomePage() {
                 <button
                   type="submit"
                   disabled={reqSubmitting}
-                  className="w-full py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold flex items-center justify-center gap-2 shadow-md disabled:opacity-50 transition"
+                  className="w-full py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-black flex items-center justify-center gap-2 shadow-lg shadow-blue-600/30 disabled:opacity-50 transition-all cursor-pointer"
                 >
                   {reqSubmitting ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
@@ -632,223 +587,8 @@ export default function HomePage() {
                   )}
                 </button>
               </div>
-            </form>
+</form>
           )}
-        </div>
-      </section>
-
-      {/* 4. INDUSTRY SECTORS DYNAMIC FROM ADMIN / FIRESTORE */}
-      <section data-scroll-reveal className="mx-auto w-full max-w-[1536px] space-y-8 px-3 py-10 sm:px-6 sm:py-12 lg:px-8">
-        
-        <div className="space-y-6">
-          <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-600 text-xs font-bold w-fit">
-              <span>Universal Multi-Industry Portal</span>
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
-              Recruit &amp; apply across all hiring sectors.
-            </h2>
-            <p className="max-w-2xl text-sm leading-relaxed text-slate-600 font-medium">
-              Connecting qualified professionals with verified corporate employers around the globe.
-            </p>
-          </div>
-
-          {/* Dynamic Sector Filter Pills */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-            <button
-              type="button"
-              onClick={() => handleCategorySelect('all')}
-              className={`shrink-0 px-4 py-2.5 rounded-full text-xs font-extrabold transition-all duration-200 ${
-                selectedCategory === 'all'
-                  ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20'
-                  : 'bg-white text-slate-700 border border-slate-200 hover:border-blue-500 hover:text-blue-600'
-              }`}
-            >
-              All Sectors ({jobs.length})
-            </button>
-            {categories.map(cat => {
-              const count = jobs.filter(j => j.category === cat.name).length;
-              return (
-                <button
-                  key={cat.id}
-                  type="button"
-                  onClick={() => handleCategorySelect(cat.name)}
-                  className={`shrink-0 px-4 py-2.5 rounded-full text-xs font-extrabold transition-all duration-200 ${
-                    selectedCategory === cat.name
-                      ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20'
-                      : 'bg-white text-slate-700 border border-slate-200 hover:border-blue-500 hover:text-blue-600'
-                  }`}
-                >
-                  {cat.name} {count > 0 && `(${count})`}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Dynamic Sector Cards Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-          {categories.map(cat => {
-            const IconComponent = getCategoryIcon(cat.iconName);
-            const isSelected = selectedCategory === cat.name;
-            const count = jobs.filter(j => j.category === cat.name).length;
-            const imageUrl = cat.imageUrl || categoryImageFallbacks[cat.slug];
-            return (
-              <button
-                key={cat.id}
-                type="button"
-                onClick={() => handleCategorySelect(isSelected ? 'all' : cat.name)}
-                className={`group relative isolate rounded-2xl overflow-hidden min-h-[210px] bg-slate-900 border text-left p-5 flex flex-col justify-between transition-all duration-300 ${
-                  isSelected
-                    ? 'border-blue-400 ring-2 ring-blue-500 shadow-lg shadow-blue-600/20'
-                    : 'border-slate-200 shadow-sm hover:border-blue-400 hover:-translate-y-1 hover:shadow-lg'
-                }`}
-              >
-                {imageUrl && (
-                  <img src={imageUrl} alt="" className="absolute inset-0 -z-20 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                )}
-                <span className="absolute inset-0 -z-10 bg-gradient-to-b from-slate-950/25 via-slate-950/20 to-slate-950/95" />
-
-                <div className="flex items-center justify-between gap-2">
-                  <div className={`w-11 h-11 rounded-2xl flex items-center justify-center transition-colors ${
-                    isSelected ? 'bg-blue-600 text-white' : 'bg-white/90 border border-white/60 text-blue-600 backdrop-blur-sm group-hover:bg-blue-600 group-hover:text-white'
-                  }`}>
-                    <IconComponent className="w-5 h-5" />
-                  </div>
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
-                    isSelected ? 'bg-blue-600 text-white border-blue-500' : 'bg-slate-950/55 text-white border-white/30 backdrop-blur-sm'
-                  }`}>
-                    {count} {count === 1 ? 'Job' : 'Jobs'}
-                  </span>
-                </div>
-
-                <div className="space-y-1 mt-4">
-                  <span className="text-[10px] font-extrabold text-blue-300 uppercase tracking-wider block">Sector</span>
-                  <h3 className="text-sm font-extrabold text-white line-clamp-2 leading-snug">
-                    {cat.name}
-                  </h3>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-
-      </section>
-
-      {/* Featured vacancies */}
-      <section id="vacancies-section" data-scroll-reveal className="bg-slate-50 px-4 py-16 sm:px-6 lg:px-8 border-t border-slate-200">
-        <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <span className="text-xs font-extrabold uppercase tracking-[.18em] text-blue-600">
-                Verified Vacancies
-              </span>
-              <h2 className="mt-2 max-w-3xl text-3xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
-                {selectedCategory === 'all' ? 'Featured positions across top industries.' : `Vacancies in ${selectedCategory}`}
-              </h2>
-              <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-600">
-                Explore trusted opportunities for Software Engineers, Healthcare Specialists, Financial Directors, Project Managers, and Operations Leaders.
-              </p>
-            </div>
-            <Link
-              href="/jobs"
-              className="inline-flex w-fit items-center gap-2 rounded-full bg-blue-600 px-5 py-3 text-xs font-bold text-white transition-transform hover:-translate-y-0.5 hover:bg-blue-700 shadow-md shadow-blue-600/20"
-            >
-              View all vacancies <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-
-          <div className="mt-9 grid grid-cols-1 md:grid-cols-2 gap-6">
-            {displayJobs.length === 0 ? (
-              <div className="col-span-2 bg-white p-12 rounded-3xl text-center border border-blue-100 space-y-3">
-                <Briefcase className="w-10 h-10 text-slate-400 mx-auto" />
-                <h3 className="font-bold text-slate-900 text-base">No active vacancies currently in this sector</h3>
-                <p className="text-xs text-slate-500">Publish a new vacancy from the Admin Panel to display it here!</p>
-              </div>
-            ) : (
-              displayJobs.map(job => {
-                const compObj = companies.find(c => c.name === job.companyName);
-                const logoUrl = (job.companyLogo && job.companyLogo !== '/images/nfs-logo.png') ? job.companyLogo : (compObj?.logo || '/images/nfs-logo.png');
-
-                return (
-                  <article
-                    key={job.id}
-                    className={`group relative isolate flex min-h-[290px] flex-col justify-between overflow-hidden rounded-2xl border p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-500 hover:shadow-md ${job.imageUrl ? 'border-slate-700 bg-slate-900 text-white' : 'border-blue-100 bg-white text-slate-900'}`}
-                  >
-                    {job.imageUrl && (
-                      <>
-                        <img src={job.imageUrl} alt="" className="absolute inset-0 -z-20 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                        <span className="absolute inset-0 -z-10 bg-gradient-to-b from-slate-950/35 via-slate-950/60 to-slate-950/95" />
-                      </>
-                    )}
-                    <div className="flex items-start justify-between gap-4">
-                      <img
-                        src={logoUrl}
-                        alt={job.companyName}
-                        className="w-12 h-12 rounded-2xl object-contain ring-1 ring-blue-100 bg-white p-1.5 shadow-xs shrink-0"
-                      />
-                      {job.urgentHiring ? (
-                        <span className="animate-urgent-pulse rounded-md px-2.5 py-1 text-[10px] font-bold tracking-wide border border-blue-200">
-                          ⚡ Urgent
-                        </span>
-                      ) : (
-                        <span className="rounded-md px-2.5 py-1 text-[10px] font-bold tracking-wide border bg-slate-100 text-slate-600 border-slate-200">
-                          Open
-                        </span>
-                      )}
-                    </div>
-
-                  <div className="mt-4 flex-1">
-                    <p className={`text-[10px] font-bold uppercase tracking-[.14em] flex items-center justify-between gap-2 ${job.imageUrl ? 'text-blue-300' : 'text-blue-600'}`}>
-                      <span>{job.category}</span>
-                      {job.companyWebsite ? (
-                        <a
-                          href={job.companyWebsite.startsWith('http') ? job.companyWebsite : `https://${job.companyWebsite}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={`font-extrabold hover:underline normal-case flex items-center gap-1 ${job.imageUrl ? 'text-white' : 'text-blue-600'}`}
-                          title={`Visit ${job.companyName} website`}
-                        >
-                          {job.companyName} ↗
-                        </a>
-                      ) : (
-                        <span className={`font-extrabold normal-case ${job.imageUrl ? 'text-white' : 'text-slate-700'}`}>{job.companyName}</span>
-                      )}
-                    </p>
-                    <h3 className={`mt-1 text-lg font-extrabold ${job.imageUrl ? 'text-white' : 'text-slate-900'}`}>{job.title}</h3>
-                    <p className={`mt-2 text-xs leading-relaxed line-clamp-2 ${job.imageUrl ? 'text-slate-200' : 'text-slate-600'}`}>
-                      {job.description}
-                    </p>
-                  </div>
-
-                  <div className={`mt-4 flex flex-col items-start gap-3 border-t pt-4 text-xs sm:flex-row sm:items-center sm:justify-between ${job.imageUrl ? 'border-white/20' : 'border-slate-100'}`}>
-                    <div className={`flex flex-wrap items-center gap-3 ${job.imageUrl ? 'text-slate-200' : 'text-slate-500'}`}>
-                      <span className="flex items-center gap-1">
-                        <MapPin className="h-3.5 w-3.5 text-blue-600" /> {job.city}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Clock className="h-3.5 w-3.5 text-blue-600" /> {job.jobType}
-                      </span>
-                    </div>
-                    <strong className={`text-sm font-extrabold ${job.imageUrl ? 'text-blue-300' : 'text-blue-600'}`}>
-                      {job.currency} {job.salaryMin.toLocaleString('en-US')}–{job.salaryMax.toLocaleString('en-US')}
-                    </strong>
-                  </div>
-
-                  <div className={`mt-4 flex justify-stretch border-t pt-3 sm:justify-end ${job.imageUrl ? 'border-white/20' : 'border-slate-100'}`}>
-                    <Link
-                      href={`/jobs/${job.id}`}
-                      className="btn-orange inline-flex w-full items-center justify-center gap-1 px-4 py-2 text-xs sm:w-auto"
-                    >
-                      <span>Apply Now</span>
-                      <ArrowUpRight className="h-4 w-4" />
-                    </Link>
-                  </div>
-                  </article>
-                );
-              })
-            )}
-          </div>
         </div>
       </section>
 
@@ -893,7 +633,103 @@ export default function HomePage() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
 
+
+
+      {/* BLOG & INSIGHTS SECTION */}
+      <section data-scroll-reveal className="py-16 bg-white border-b border-slate-200">
+        <div className="mx-auto w-full max-w-[1536px] px-3 sm:px-6 lg:px-8 space-y-10">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div className="space-y-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-bold border border-blue-200">
+                <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+                <span>Latest Recruitment Insights &amp; Industry News</span>
+              </div>
+              <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-slate-900">
+                Blog &amp; <span className="text-blue-600">Career Insights</span>
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-600 max-w-2xl font-medium">
+                Expert guides on European work visas, candidate credential screening, heavy driver licenses (Code 95), and multi-industry recruitment trends.
+              </p>
+            </div>
+            <Link
+              href="/blog"
+              className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-5 py-3 text-xs font-bold text-white transition-all hover:bg-blue-700 shadow-md shadow-blue-600/20 shrink-0"
+            >
+              <span>Explore All Articles</span>
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Blog Post 1 */}
+            <article className="group rounded-3xl bg-slate-50 border border-slate-200 p-6 flex flex-col justify-between hover:border-blue-500 hover:shadow-xl transition-all duration-300">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between text-xs text-slate-500">
+                  <span className="font-bold text-blue-600 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">European Careers</span>
+                  <span>5 min read</span>
+                </div>
+                <h3 className="text-lg font-extrabold text-slate-900 group-hover:text-blue-600 transition-colors leading-snug">
+                  How to Secure English Speaking Jobs in Europe with Visa Sponsorship
+                </h3>
+                <p className="text-xs text-slate-600 leading-relaxed line-clamp-3">
+                  Discover how foreign job seekers and Indian nationals can navigate European work permit requirements, language barriers, and direct employer hiring.
+                </p>
+              </div>
+              <div className="mt-6 pt-4 border-t border-slate-200 flex items-center justify-between">
+                <span className="text-[11px] font-bold text-slate-500">August 2026</span>
+                <Link href="/blog" className="text-xs font-black text-blue-600 hover:underline flex items-center gap-1">
+                  <span>Read Article</span> →
+                </Link>
+              </div>
+            </article>
+
+            {/* Blog Post 2 */}
+            <article className="group rounded-3xl bg-slate-50 border border-slate-200 p-6 flex flex-col justify-between hover:border-blue-500 hover:shadow-xl transition-all duration-300">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between text-xs text-slate-500">
+                  <span className="font-bold text-blue-600 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">Logistics &amp; Driver</span>
+                  <span>4 min read</span>
+                </div>
+                <h3 className="text-lg font-extrabold text-slate-900 group-hover:text-blue-600 transition-colors leading-snug">
+                  Class CE Heavy Driver Guide: Code 95 Qualification &amp; European Routes
+                </h3>
+                <p className="text-xs text-slate-600 leading-relaxed line-clamp-3">
+                  Everything you need to know about Code 95 driver permits, tachograph regulations, and heavy driver salary packages across Germany and Poland.
+                </p>
+              </div>
+              <div className="mt-6 pt-4 border-t border-slate-200 flex items-center justify-between">
+                <span className="text-[11px] font-bold text-slate-500">August 2026</span>
+                <Link href="/blog" className="text-xs font-black text-blue-600 hover:underline flex items-center gap-1">
+                  <span>Read Article</span> →
+                </Link>
+              </div>
+            </article>
+
+            {/* Blog Post 3 */}
+            <article className="group rounded-3xl bg-slate-50 border border-slate-200 p-6 flex flex-col justify-between hover:border-blue-500 hover:shadow-xl transition-all duration-300">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between text-xs text-slate-500">
+                  <span className="font-bold text-blue-600 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">Employer Hiring</span>
+                  <span>6 min read</span>
+                </div>
+                <h3 className="text-lg font-extrabold text-slate-900 group-hover:text-blue-600 transition-colors leading-snug">
+                  Why Credential Verification Reduces Candidate Ghosting by 95%
+                </h3>
+                <p className="text-xs text-slate-600 leading-relaxed line-clamp-3">
+                  Learn why top corporate employers are replacing traditional recruiter shortlists with pre-screened, audit-verified professional profiles.
+                </p>
+              </div>
+              <div className="mt-6 pt-4 border-t border-slate-200 flex items-center justify-between">
+                <span className="text-[11px] font-bold text-slate-500">July 2026</span>
+                <Link href="/blog" className="text-xs font-black text-blue-600 hover:underline flex items-center gap-1">
+                  <span>Read Article</span> →
+                </Link>
+              </div>
+            </article>
+          </div>
         </div>
       </section>
 
@@ -915,49 +751,123 @@ export default function HomePage() {
 
           {/* 4 Feature Cards for Keywords */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-lg">🇪🇺</div>
-              <h3 className="font-extrabold text-slate-900 text-base">Jobs in Europe</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Explore verified vacancies across Germany, Netherlands, Poland, and UK. Full visa support for international job seekers.
-              </p>
-              <Link href="/jobs?q=Europe" className="text-xs font-extrabold text-blue-600 hover:underline inline-flex items-center gap-1">
-                Browse European Jobs →
-              </Link>
+            
+            {/* Card 1: Jobs in Europe */}
+            <div className="relative rounded-3xl bg-white p-7 border border-slate-200/80 shadow-sm flex flex-col justify-between overflow-hidden">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white shadow-md ring-4 ring-blue-50 border border-blue-400/40">
+                    <Globe className="h-7 w-7 stroke-[2]" />
+                    <span className="absolute -bottom-1 -right-1 rounded-full bg-amber-400 px-1 py-px text-[8px] font-black text-slate-950 shadow-xs">
+                      🇪🇺 EU
+                    </span>
+                  </div>
+                  <span className="rounded-full bg-blue-50 px-2.5 py-1 text-[10px] font-black uppercase text-blue-600 border border-blue-200">
+                    Visa Support
+                  </span>
+                </div>
+                <div>
+                  <h3 className="font-black text-slate-900 text-lg">Jobs in Europe</h3>
+                  <p className="mt-2 text-xs text-slate-600 leading-relaxed font-medium">
+                    Explore verified vacancies across Germany, Netherlands, Poland, and UK. Full visa support for international job seekers.
+                  </p>
+                </div>
+              </div>
+              <div className="pt-5 mt-4 border-t border-slate-100">
+                <Link href="/jobs?q=Europe" className="text-xs font-black text-blue-600 hover:underline inline-flex items-center gap-1.5">
+                  <span>Browse European Jobs</span>
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </div>
             </div>
 
-            <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-lg">📦</div>
-              <h3 className="font-extrabold text-slate-900 text-base">Warehouse Jobs</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Fulfillment supervisors, forklift operators, and inventory associates in top European logistics hubs with accommodation.
-              </p>
-              <Link href="/jobs?q=Warehouse" className="text-xs font-extrabold text-blue-600 hover:underline inline-flex items-center gap-1">
-                Explore Warehouse Roles →
-              </Link>
+            {/* Card 2: Warehouse Jobs */}
+            <div className="relative rounded-3xl bg-white p-7 border border-slate-200/80 shadow-sm flex flex-col justify-between overflow-hidden">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 via-orange-500 to-amber-700 text-white shadow-md ring-4 ring-amber-50 border border-amber-300/40">
+                    <Boxes className="h-7 w-7 stroke-[2]" />
+                    <span className="absolute -bottom-1 -right-1 rounded-full bg-slate-900 px-1 py-px text-[8px] font-black text-amber-300 shadow-xs">
+                      📦 Logistics
+                    </span>
+                  </div>
+                  <span className="rounded-full bg-amber-50 px-2.5 py-1 text-[10px] font-black uppercase text-amber-700 border border-amber-200">
+                    Housing Incl.
+                  </span>
+                </div>
+                <div>
+                  <h3 className="font-black text-slate-900 text-lg">Warehouse Jobs</h3>
+                  <p className="mt-2 text-xs text-slate-600 leading-relaxed font-medium">
+                    Fulfillment supervisors, forklift operators, and inventory associates in top European logistics hubs with accommodation.
+                  </p>
+                </div>
+              </div>
+              <div className="pt-5 mt-4 border-t border-slate-100">
+                <Link href="/jobs?q=Warehouse" className="text-xs font-black text-amber-600 hover:underline inline-flex items-center gap-1.5">
+                  <span>Explore Warehouse Roles</span>
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </div>
             </div>
 
-            <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-lg">🚚</div>
-              <h3 className="font-extrabold text-slate-900 text-base">Heavy Driver Jobs</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Class CE long-haul trailer drivers needed across Germany, Poland, and EU corridors. High salary packages &amp; Code 95 support.
-              </p>
-              <Link href="/jobs?q=Heavy+Driver" className="text-xs font-extrabold text-blue-600 hover:underline inline-flex items-center gap-1">
-                View Heavy Driver Jobs →
-              </Link>
+            {/* Card 3: Heavy Driver Jobs */}
+            <div className="relative rounded-3xl bg-white p-7 border border-slate-200/80 shadow-sm flex flex-col justify-between overflow-hidden">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 via-cyan-600 to-blue-800 text-white shadow-md ring-4 ring-cyan-50 border border-cyan-300/40">
+                    <Truck className="h-7 w-7 stroke-[2]" />
+                    <span className="absolute -bottom-1 -right-1 rounded-full bg-cyan-400 px-1 py-px text-[8px] font-black text-slate-950 shadow-xs">
+                      🚚 CDL CE
+                    </span>
+                  </div>
+                  <span className="rounded-full bg-cyan-50 px-2.5 py-1 text-[10px] font-black uppercase text-cyan-700 border border-cyan-200">
+                    High Salary
+                  </span>
+                </div>
+                <div>
+                  <h3 className="font-black text-slate-900 text-lg">Heavy Driver Jobs</h3>
+                  <p className="mt-2 text-xs text-slate-600 leading-relaxed font-medium">
+                    Class CE long-haul trailer drivers needed across Germany, Poland, and EU corridors. High salary packages &amp; Code 95 support.
+                  </p>
+                </div>
+              </div>
+              <div className="pt-5 mt-4 border-t border-slate-100">
+                <Link href="/jobs?q=Heavy+Driver" className="text-xs font-black text-cyan-600 hover:underline inline-flex items-center gap-1.5">
+                  <span>View Heavy Driver Jobs</span>
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </div>
             </div>
 
-            <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-lg">🗣️</div>
-              <h3 className="font-extrabold text-slate-900 text-base">English Speaking &amp; Foreigners</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                No local language barriers! Find English speaking jobs in Europe tailored for foreigners and Indian applicants with relocation support.
-              </p>
-              <Link href="/jobs?q=English+Speaking" className="text-xs font-extrabold text-blue-600 hover:underline inline-flex items-center gap-1">
-                See English Speaking Jobs →
-              </Link>
+            {/* Card 4: English Speaking & Foreigners */}
+            <div className="relative rounded-3xl bg-white p-7 border border-slate-200/80 shadow-sm flex flex-col justify-between overflow-hidden">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 via-teal-600 to-emerald-800 text-white shadow-md ring-4 ring-emerald-50 border border-emerald-300/40">
+                    <Languages className="h-7 w-7 stroke-[2]" />
+                    <span className="absolute -bottom-1 -right-1 rounded-full bg-amber-400 px-1 py-px text-[8px] font-black text-slate-950 shadow-xs">
+                      🗣️ Global
+                    </span>
+                  </div>
+                  <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-black uppercase text-emerald-700 border border-emerald-200">
+                    No German Req.
+                  </span>
+                </div>
+                <div>
+                  <h3 className="font-black text-slate-900 text-lg">English Speaking &amp; Foreigners</h3>
+                  <p className="mt-2 text-xs text-slate-600 leading-relaxed font-medium">
+                    No local language barriers! Find English speaking jobs in Europe tailored for foreigners and Indian applicants with relocation support.
+                  </p>
+                </div>
+              </div>
+              <div className="pt-5 mt-4 border-t border-slate-100">
+                <Link href="/jobs?q=English+Speaking" className="text-xs font-black text-emerald-600 hover:underline inline-flex items-center gap-1.5">
+                  <span>See English Speaking Jobs</span>
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </div>
             </div>
+
           </div>
 
           {/* Frequently Asked Questions (SEO Structured Content) */}

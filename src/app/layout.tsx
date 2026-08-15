@@ -7,6 +7,7 @@ import { MobileBottomNav } from '@/components/layout/MobileBottomNav';
 import { AuthProvider } from '@/lib/context/AuthContext';
 import { Navbar } from '@/components/layout/Navbar';
 import { LoadingScreen } from '@/components/ui/LoadingScreen';
+import { WhatsAppWidget } from '@/components/ui/WhatsAppWidget';
 
 export const metadata: Metadata = {
   title: 'Jobs in Europe | Warehouse Jobs, Heavy Driver Jobs & English Speaking Jobs for Foreigners & Indians',
@@ -111,6 +112,7 @@ export default function RootLayout({
             <main className="flex-1 bg-slate-50">{children}</main>
             <Footer />
             <MobileBottomNav />
+            <WhatsAppWidget />
           </AuthProvider>
         </AppProvider>
       </body>

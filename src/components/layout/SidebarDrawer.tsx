@@ -20,7 +20,8 @@ import {
   LayoutDashboard,
   RefreshCw,
   Award,
-  Briefcase
+  Briefcase,
+  ShieldCheck
 } from 'lucide-react';
 import { useAuth } from '@/lib/context/AuthContext';
 
@@ -54,16 +55,11 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({ isOpen, onClose })
 
   const navSections = [
     {
-      title: 'Navigation',
+      title: 'Main Portals',
       items: [
-        { href: '/', label: 'Home', icon: Home },
-        { href: '/jobs', label: 'Vacancies', icon: Briefcase, badge: '500+' },
-        { href: '/professionals', label: 'For Candidates', icon: User },
-        { href: '/companies', label: 'For Employers', icon: Building2 },
-        { href: '/success-stories', label: 'Success Stories', icon: Award, badge: 'New' },
-        { href: '/blog', label: 'Blog & Insights', icon: Sparkles, badge: 'Hot' },
-        { href: '/about', label: 'About NFS', icon: Globe },
-        { href: '/contact', label: 'Contact Us', icon: MessageSquare }
+        { href: '/jobs', label: '1. For Job Seekers', icon: Briefcase, badge: '500+' },
+        { href: '/services', label: '2. Services', icon: ShieldCheck },
+        { href: '/companies', label: '3. For Employer', icon: Building2 },
       ]
     }
   ];
