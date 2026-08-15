@@ -277,11 +277,12 @@ export default function HomePage() {
 
             <nav className="flex items-center rounded-full border border-blue-200/80 bg-white/95 p-1 text-[11px] font-extrabold text-slate-800 shadow-md backdrop-blur-xl">
               {[
+                { href: '/', label: 'Home' },
                 { href: '/jobs', label: '1. For Job Seekers' },
                 { href: '/services', label: '2. Services' },
                 { href: '/companies', label: '3. For Employer' },
               ].map(link => (
-                <Link key={link.href} href={link.href} className="whitespace-nowrap rounded-full px-4 py-2 text-slate-800 hover:text-blue-600 hover:bg-blue-50 transition-all font-extrabold">
+                <Link key={link.href} href={link.href} className={`whitespace-nowrap rounded-full px-4 py-2 transition-all font-extrabold ${link.href === '/' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-800 hover:text-blue-600 hover:bg-blue-50'}`}>
                   {link.label}
                 </Link>
               ))}

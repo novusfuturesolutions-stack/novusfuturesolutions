@@ -23,6 +23,7 @@ export const MobileBottomNav = memo(function MobileBottomNav() {
   };
 
   const navItems: { href: string; label: string; icon: any; isCenter?: boolean; badge?: string }[] = [
+    { href: '/', label: 'Home', icon: Home },
     { href: '/jobs', label: '1. Job Seekers', icon: Briefcase },
     { href: '/services', label: '2. Services', icon: ShieldCheck },
     { href: '/companies', label: '3. Employer', icon: Building2 }

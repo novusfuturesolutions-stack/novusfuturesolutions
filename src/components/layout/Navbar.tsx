@@ -8,6 +8,7 @@ import { useAuth } from '@/lib/context/AuthContext';
 import { useApp } from '@/lib/context/AppContext';
 
 const links = [
+  { href: '/', label: 'Home' },
   { href: '/jobs', label: '1. For Job Seekers' },
   { href: '/services', label: '2. Services' },
   { href: '/companies', label: '3. For Employer' },

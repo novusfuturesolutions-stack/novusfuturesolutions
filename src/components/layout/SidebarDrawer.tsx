@@ -57,6 +57,7 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({ isOpen, onClose })
     {
       title: 'Main Portals',
       items: [
+        { href: '/', label: 'Home', icon: Home },
         { href: '/jobs', label: '1. For Job Seekers', icon: Briefcase, badge: '500+' },
         { href: '/services', label: '2. Services', icon: ShieldCheck },
         { href: '/companies', label: '3. For Employer', icon: Building2 },
